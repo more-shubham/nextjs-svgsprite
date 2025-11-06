@@ -7,27 +7,6 @@
  * To regenerate this file, run: npm run build:sprite
  */
 
-export type IconName =
-  | 'brands:apple'
-  | 'brands:google'
-  | 'home'
-  | 'search'
-  | 'settings'
-  | 'star'
-  | 'sun-moon'
-  | 'user'
-  | 'social:facebook'
-  | 'social:twitter';
+export type IconName = 'brands:apple' | 'brands:google' | 'home' | 'search' | 'settings' | 'star' | 'sun-moon' | 'user' | 'social:facebook' | 'social:twitter';
 
-export const iconNames = [
-  'brands:apple',
-  'brands:google',
-  'home',
-  'search',
-  'settings',
-  'star',
-  'sun-moon',
-  'user',
-  'social:facebook',
-  'social:twitter',
-] as const;
+export const iconNames = ['brands:apple', 'brands:google', 'home', 'search', 'settings', 'star', 'sun-moon', 'user', 'social:facebook', 'social:twitter'] as const;

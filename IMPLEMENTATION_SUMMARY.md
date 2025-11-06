@@ -66,9 +66,7 @@ Updated `package.json` with:
     "./icon-types": "./lib/icon-types.ts",
     "./icons/route": "./lib/icons/route.ts",
     "./icons/[namespace]/route": "./lib/icons/[namespace]/route.ts",
-    "./lib/icons-sprite.svg": "./lib/icons-sprite.svg",
-    "./lib/icons-social.svg": "./lib/icons-social.svg",
-    "./lib/icons-brands.svg": "./lib/icons-brands.svg"
+    "./lib/*.svg": "./lib/*.svg"
   },
   "files": [
     "nextjs-svgsprite.js",
