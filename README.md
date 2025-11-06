@@ -12,6 +12,9 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 - ♿ **Accessible** - Includes `IconWithLabel` component for accessibility
 - 🔷 **TypeScript Support** - Full type safety with autocomplete for icon names
 - 💡 **IntelliSense** - Get icon name suggestions as you type
+- 🔧 **Automatic Name Normalization** - Converts all naming conventions to kebab-case
+- 📁 **Namespace Support** - Organize icons with folder structure (e.g., `social/facebook.svg` → `social:facebook`)
+- 🔍 **Duplicate Detection** - Warns when multiple files normalize to the same name
 
 ## Quick Start
 
@@ -32,6 +35,23 @@ svg-icons/
   ├── settings.svg
   └── search.svg
 ```
+
+**With Namespaces (optional):**
+Organize icons in subdirectories for namespacing:
+
+```
+svg-icons/
+  ├── home.svg
+  ├── user.svg
+  ├── social/
+  │   ├── facebook.svg
+  │   └── twitter.svg
+  └── brands/
+      ├── apple.svg
+      └── google.svg
+```
+
+This creates namespaced icons: `social:facebook`, `social:twitter`, `brands:apple`, `brands:google`
 
 ### 3. Build the Sprite
 
@@ -230,14 +250,72 @@ For complete TypeScript documentation, including:
 
 See **[TYPESCRIPT.md](./TYPESCRIPT.md)**
 
+## Naming Conventions & Normalization
+
+All icon names are automatically normalized to **kebab-case** format. This means you can use any naming convention in your SVG files, and they'll be standardized:
+
+### Supported Naming Patterns
+
+| Original Filename | Normalized Name |
+|-------------------|-----------------|
+| `sunMoon.svg` | `sun-moon` |
+| `SunMoon.svg` | `sun-moon` |
+| `sun_moon.svg` | `sun-moon` |
+| `sun moon.svg` | `sun-moon` |
+| `sun-moon.svg` | `sun-moon` |
+| `sun  moon.svg` | `sun-moon` (multiple spaces) |
+
+### Duplicate Detection
+
+If multiple files normalize to the same name, the plugin will:
+1. ⚠️ Show a warning listing all duplicate files
+2. Keep only the first occurrence
+3. Remove the duplicates from the final sprite
+
+Example warning:
+```
+⚠️  Warning: Duplicate icon names detected after normalization:
+   "sun-moon" found in: [SunMoon, sun-moon, sunMoon, sun_moon]
+   These duplicates have been removed. Only the first occurrence is kept.
+```
+
+### Namespace Support
+
+Organize icons using folders. The folder structure becomes the namespace:
+
+**Simple Namespace:**
+```
+svg-icons/
+  └── social/
+      ├── facebook.svg  → social:facebook
+      └── twitter.svg   → social:twitter
+```
+
+**Nested Namespace:**
+```
+svg-icons/
+  └── sidebar/
+      └── nav items/
+          └── user menu.svg  → sidebar:nav-items:user-menu
+```
+
+**Using Namespaced Icons:**
+```tsx
+<Icon name="social:facebook" size={24} />
+<Icon name="sidebar:nav-items:user-menu" size={24} />
+```
+
+> **Note:** Folder names are also normalized to kebab-case, just like file names.
+
 ## How It Works
 
 ### 1. Sprite Generation
 
 The `scripts/build-sprite.js` script:
-- Reads all `.svg` files from the `svg-icons/` directory
+- Reads all `.svg` files from the `svg-icons/` directory (including subdirectories)
+- Normalizes all file and folder names to kebab-case
 - Uses `svgstore` to combine them into a single sprite
-- Each icon becomes a `<symbol>` with an `id` matching its filename (without extension)
+- Each icon becomes a `<symbol>` with an `id` matching its normalized name
 - Outputs to `public/icons-sprite.svg`
 
 ### 2. The `/icons` Route

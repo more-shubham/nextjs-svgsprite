@@ -19,6 +19,31 @@ const OUTPUT_PATH = path.join(process.cwd(), 'public', 'icons-sprite.svg');
 const TYPES_OUTPUT_PATH = path.join(process.cwd(), 'components', 'icon-types.ts');
 
 /**
+ * Normalize icon name to kebab-case
+ * Converts: sunMoon, SunMoon, sun_moon, "sun moon", "sun  moon" → sun-moon
+ * 
+ * @param {string} name - The original icon name
+ * @returns {string} - The normalized kebab-case name
+ */
+function normalizeIconName(name) {
+  return name
+    // Replace multiple spaces with single space first
+    .replace(/\s+/g, ' ')
+    // Replace spaces with hyphens
+    .replace(/\s/g, '-')
+    // Handle PascalCase and camelCase: insert hyphen before uppercase letters
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    // Replace underscores with hyphens
+    .replace(/_/g, '-')
+    // Convert to lowercase
+    .toLowerCase()
+    // Remove any duplicate hyphens
+    .replace(/-+/g, '-')
+    // Remove leading/trailing hyphens
+    .replace(/^-|-$/g, '');
+}
+
+/**
  * Ensure a directory exists, create if it doesn't
  */
 function ensureDirectoryExists(dirPath) {
@@ -28,20 +53,85 @@ function ensureDirectoryExists(dirPath) {
 }
 
 /**
- * Get all SVG files from a directory
+ * Get all SVG files from a directory recursively
+ * Supports namespaces via subdirectories (e.g., sidebar/home.svg → sidebar:home)
+ * Nested namespaces: sidebar/nav/icon.svg → sidebar:nav:icon
+ * All folder and file names are normalized to kebab-case
  */
-function getSvgFiles(dir) {
+function getSvgFiles(dir, namespace = '', originalNamespace = '') {
   if (!fs.existsSync(dir)) {
     console.warn(`Warning: SVG directory not found at ${dir}`);
     return [];
   }
 
-  return fs.readdirSync(dir)
-    .filter(file => file.endsWith('.svg'))
-    .map(file => ({
-      name: path.basename(file, '.svg'),
-      path: path.join(dir, file),
-    }));
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  let files = [];
+
+  entries.forEach(entry => {
+    const fullPath = path.join(dir, entry.name);
+    
+    if (entry.isDirectory()) {
+      // Normalize folder name to kebab-case
+      const normalizedFolderName = normalizeIconName(entry.name);
+      // Build namespace path with kebab-case folder names
+      const newNamespace = namespace ? `${namespace}:${normalizedFolderName}` : normalizedFolderName;
+      const newOriginalNamespace = originalNamespace ? `${originalNamespace}/${entry.name}` : entry.name;
+      
+      // Recursively process subdirectories as namespaces
+      files = files.concat(getSvgFiles(fullPath, newNamespace, newOriginalNamespace));
+    } else if (entry.isFile() && entry.name.endsWith('.svg')) {
+      const originalFileName = path.basename(entry.name, '.svg');
+      const normalizedFileName = normalizeIconName(originalFileName);
+      const fullIconName = namespace ? `${namespace}:${normalizedFileName}` : normalizedFileName;
+      const fullOriginalName = originalNamespace ? `${originalNamespace}/${originalFileName}` : originalFileName;
+      
+      files.push({
+        originalName: fullOriginalName,
+        name: fullIconName,
+        path: fullPath,
+      });
+    }
+  });
+
+  return files;
+}
+
+/**
+ * Remove duplicate icons and show warnings
+ */
+function deduplicateIcons(files) {
+  const uniqueIcons = new Map();
+  const duplicates = [];
+
+  files.forEach(file => {
+    if (uniqueIcons.has(file.name)) {
+      // Found a duplicate
+      const existing = uniqueIcons.get(file.name);
+      if (!duplicates.some(d => d.name === file.name)) {
+        duplicates.push({
+          name: file.name,
+          files: [existing.originalName, file.originalName]
+        });
+      } else {
+        // Add to existing duplicate entry
+        const dup = duplicates.find(d => d.name === file.name);
+        dup.files.push(file.originalName);
+      }
+    } else {
+      uniqueIcons.set(file.name, file);
+    }
+  });
+
+  // Show warnings for duplicates
+  if (duplicates.length > 0) {
+    console.warn('\n⚠️  Warning: Duplicate icon names detected after normalization:');
+    duplicates.forEach(({ name, files }) => {
+      console.warn(`   "${name}" found in: [${files.join(', ')}]`);
+    });
+    console.warn('   These duplicates have been removed. Only the first occurrence is kept.\n');
+  }
+
+  return Array.from(uniqueIcons.values());
 }
 
 /**
@@ -89,9 +179,9 @@ function buildSprite() {
   });
 
   // Get all SVG files
-  const svgFiles = getSvgFiles(SVG_DIR);
+  const allSvgFiles = getSvgFiles(SVG_DIR);
 
-  if (svgFiles.length === 0) {
+  if (allSvgFiles.length === 0) {
     console.warn('No SVG files found. Creating empty sprite.');
     ensureDirectoryExists(path.dirname(OUTPUT_PATH));
     fs.writeFileSync(OUTPUT_PATH, '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>');
@@ -99,17 +189,20 @@ function buildSprite() {
     return;
   }
 
-  console.log(`Found ${svgFiles.length} SVG file(s):`);
+  // Remove duplicates
+  const svgFiles = deduplicateIcons(allSvgFiles);
+
+  console.log(`Found ${allSvgFiles.length} SVG file(s), ${svgFiles.length} unique after normalization:`);
 
   const iconNames = [];
 
   // Add each SVG to the sprite
-  svgFiles.forEach(({ name, path: filePath }) => {
+  svgFiles.forEach(({ name, originalName, path: filePath }) => {
     try {
       const svgContent = fs.readFileSync(filePath, 'utf8');
       sprites.add(name, svgContent);
       iconNames.push(name);
-      console.log(`  ✓ ${name}`);
+      console.log(`  ✓ ${name} (from ${originalName})`);
     } catch (error) {
       console.error(`  ✗ Error adding ${name}:`, error.message);
     }
