@@ -8,7 +8,7 @@
  * <Icon name="user" size={32} color="red" />
  */
 
-import React, { CSSProperties, SVGProps } from 'react';
+import { CSSProperties, SVGProps } from 'react';
 import { IconName } from './icon-types';
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
