@@ -1,9 +1,11 @@
 /**
  * Icon Component
  * 
- * A reusable React component for displaying SVG icons from the sprite
+ * A reusable React component for displaying SVG icons from bundled sprites
+ * This component works standalone and includes all icons from the package
  * 
  * @example
+ * import Icon from 'nextjs-svgsprite/Icon';
  * <Icon name="home" size={24} className="text-blue-500" />
  * <Icon name="user" size={32} color="red" />
  */
@@ -122,3 +124,6 @@ export function IconWithLabel({
     </svg>
   );
 }
+
+// Export icon names for convenience
+export * from './icon-types';
