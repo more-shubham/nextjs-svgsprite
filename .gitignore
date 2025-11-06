@@ -6,6 +6,12 @@ node_modules/
 # Testing
 coverage/
 
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress.env.json
+
 # Next.js
 .next/
 out/
