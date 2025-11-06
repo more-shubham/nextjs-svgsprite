@@ -14,7 +14,14 @@ export const dynamic = 'force-static';
 export async function GET() {
   try {
     // Serve the bundled sprite from the package
-    const spritePath = path.join(__dirname, '../icons-sprite.svg');
+    // Use require.resolve to find the sprite file in node_modules
+    let spritePath: string;
+    try {
+      spritePath = require.resolve('nextjs-svgsprite/lib/icons-sprite.svg');
+    } catch {
+      // Fallback for development or when resolving from within the package
+      spritePath = path.join(__dirname, '../icons-sprite.svg');
+    }
     
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
