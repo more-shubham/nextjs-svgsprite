@@ -21,26 +21,13 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { EMPTY_SPRITE_SVG, CACHE_CONTROL } from '@/lib/config';
 
 /**
  * Force static generation for this route
  * This ensures the route is pre-rendered at build time
  */
 export const dynamic = 'force-static';
-
-/**
- * Empty SVG sprite placeholder
- * Used when the sprite file doesn't exist or an error occurs
- */
-const EMPTY_SPRITE = '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>';
-
-/**
- * Cache control header for long-term caching
- * - public: Can be cached by any cache
- * - max-age=31536000: Cache for 1 year (in seconds)
- * - immutable: Content will never change
- */
-const CACHE_CONTROL_HEADER = 'public, max-age=31536000, immutable';
 
 /**
  * GET handler for the /icons route
@@ -73,11 +60,11 @@ export async function GET() {
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       console.warn('Default sprite file not found, serving empty sprite');
-      return new NextResponse(EMPTY_SPRITE, {
+      return new NextResponse(EMPTY_SPRITE_SVG, {
         status: 200,
         headers: {
           'Content-Type': 'image/svg+xml',
-          'Cache-Control': CACHE_CONTROL_HEADER,
+          'Cache-Control': CACHE_CONTROL.buildHeader(),
         },
       });
     }
@@ -89,14 +76,14 @@ export async function GET() {
       status: 200,
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': CACHE_CONTROL_HEADER,
+        'Cache-Control': CACHE_CONTROL.buildHeader(),
       },
     });
   } catch (error) {
     console.error('Error serving default sprite:', error);
 
     // Return empty sprite on error to prevent breaking the application
-    return new NextResponse(EMPTY_SPRITE, {
+    return new NextResponse(EMPTY_SPRITE_SVG, {
       status: 500,
       headers: {
         'Content-Type': 'image/svg+xml',

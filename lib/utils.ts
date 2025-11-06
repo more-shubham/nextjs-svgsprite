@@ -98,21 +98,35 @@ export function isValidIconName(name: string): boolean {
  * Sanitize a file path to prevent directory traversal attacks
  *
  * @param filePath - The file path to sanitize
+ * @param basePath - Optional base directory to validate against
  * @returns Sanitized file path
- * @throws Error if the path contains suspicious patterns
+ * @throws Error if the path contains suspicious patterns or escapes base directory
  */
-export function sanitizeFilePath(filePath: string): string {
+export function sanitizeFilePath(filePath: string, basePath?: string): string {
   if (!filePath || typeof filePath !== 'string') {
     throw new Error('File path must be a non-empty string');
   }
 
-  // Check for directory traversal attempts
-  if (filePath.includes('..') || filePath.includes('~')) {
+  // Normalize path separators to forward slashes
+  const normalizedPath = filePath.replace(/\\/g, '/');
+
+  // Check for basic directory traversal patterns
+  if (normalizedPath.includes('..') || normalizedPath.includes('~')) {
     throw new Error('Invalid file path: directory traversal is not allowed');
   }
 
-  // Normalize path separators
-  return filePath.replace(/\\/g, '/');
+  // If basePath is provided, validate that the resolved path is within the base directory
+  if (basePath) {
+    const path = require('path');
+    const resolvedBase = path.resolve(basePath);
+    const resolvedPath = path.resolve(basePath, normalizedPath);
+
+    if (!resolvedPath.startsWith(resolvedBase)) {
+      throw new Error('Invalid file path: path escapes base directory');
+    }
+  }
+
+  return normalizedPath;
 }
 
 /**

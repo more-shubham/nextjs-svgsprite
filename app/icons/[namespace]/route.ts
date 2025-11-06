@@ -22,22 +22,13 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { EMPTY_SPRITE_SVG, CACHE_CONTROL, SPRITE_PATTERNS } from '@/lib/config';
 
 /**
  * Force static generation for this route
  * Ensures routes are pre-rendered at build time
  */
 export const dynamic = 'force-static';
-
-/**
- * Empty SVG sprite placeholder
- */
-const EMPTY_SPRITE = '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>';
-
-/**
- * Cache control header for long-term caching
- */
-const CACHE_CONTROL_HEADER = 'public, max-age=31536000, immutable';
 
 /**
  * Generate static params for all available namespaces
@@ -66,14 +57,8 @@ export async function generateStaticParams() {
     // Find all sprite files (icons-*.svg except icons-sprite.svg which is default)
     const files = fs.readdirSync(publicDir);
     const namespaces = files
-      .filter(
-        (file) => file.startsWith('icons-') && file.endsWith('.svg') && file !== 'icons-sprite.svg',
-      )
-      .map((file) => {
-        // Extract namespace from filename: icons-social.svg -> social
-        const match = file.match(/^icons-(.+)\.svg$/);
-        return match ? match[1] : null;
-      })
+      .filter(SPRITE_PATTERNS.isNamespaceSprite)
+      .map(SPRITE_PATTERNS.extractNamespace)
       .filter(Boolean) as string[];
 
     console.log(`Found ${namespaces.length} namespace(s): ${namespaces.join(', ')}`);
@@ -124,7 +109,7 @@ export async function GET(
     // Validate namespace parameter
     if (!namespace) {
       console.error('Namespace parameter is missing');
-      return new NextResponse(EMPTY_SPRITE, {
+      return new NextResponse(EMPTY_SPRITE_SVG, {
         status: 400,
         headers: {
           'Content-Type': 'image/svg+xml',
@@ -137,7 +122,7 @@ export async function GET(
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       console.warn(`Sprite file not found for namespace: ${namespace}`);
-      return new NextResponse(EMPTY_SPRITE, {
+      return new NextResponse(EMPTY_SPRITE_SVG, {
         status: 404,
         headers: {
           'Content-Type': 'image/svg+xml',
@@ -152,14 +137,14 @@ export async function GET(
       status: 200,
       headers: {
         'Content-Type': 'image/svg+xml',
-        'Cache-Control': CACHE_CONTROL_HEADER,
+        'Cache-Control': CACHE_CONTROL.buildHeader(),
       },
     });
   } catch (error) {
     console.error('Error serving namespace sprite:', error);
 
     // Return empty sprite on error
-    return new NextResponse(EMPTY_SPRITE, {
+    return new NextResponse(EMPTY_SPRITE_SVG, {
       status: 500,
       headers: {
         'Content-Type': 'image/svg+xml',

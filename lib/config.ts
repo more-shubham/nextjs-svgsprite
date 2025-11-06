@@ -21,11 +21,46 @@ export const DEFAULT_OUTPUT_PATH = 'public/icons-sprite.svg';
 export const DEFAULT_NAMESPACE = 'default';
 
 /**
- * Sprite file naming pattern
+ * Sprite filename patterns and utilities
  */
-export const SPRITE_FILE_PREFIX = 'icons-';
-export const SPRITE_FILE_EXTENSION = '.svg';
-export const DEFAULT_SPRITE_FILENAME = 'icons-sprite.svg';
+export const SPRITE_PATTERNS = {
+  /**
+   * Prefix for sprite filenames
+   */
+  PREFIX: 'icons-',
+
+  /**
+   * Default sprite filename
+   */
+  DEFAULT_FILENAME: 'icons-sprite.svg',
+
+  /**
+   * Regular expression to extract namespace from sprite filename
+   * Matches: icons-{namespace}.svg
+   */
+  NAMESPACE_REGEX: /^icons-(.+)\.svg$/,
+
+  /**
+   * Check if a filename is a sprite file (excluding default)
+   * @param filename - The filename to check
+   * @returns true if it's a namespace sprite file
+   */
+  isNamespaceSprite: (filename: string): boolean => {
+    return (
+      filename.startsWith('icons-') && filename.endsWith('.svg') && filename !== 'icons-sprite.svg'
+    );
+  },
+
+  /**
+   * Extract namespace from a sprite filename
+   * @param filename - The sprite filename (e.g., 'icons-social.svg')
+   * @returns The namespace or null if not a valid sprite filename
+   */
+  extractNamespace: (filename: string): string | null => {
+    const match = filename.match(SPRITE_PATTERNS.NAMESPACE_REGEX);
+    return match ? match[1] : null;
+  },
+};
 
 /**
  * SVG attributes to copy when building sprites
@@ -58,9 +93,24 @@ export const DEFAULT_ICON_SIZE = 24;
 export const DEFAULT_ICON_COLOR = 'currentColor';
 
 /**
- * Cache control header for sprite routes
+ * Cache control configuration
  */
-export const SPRITE_CACHE_CONTROL = 'public, max-age=31536000, immutable';
+export const CACHE_CONTROL = {
+  /**
+   * Long-term cache duration (1 year in seconds)
+   * Suitable for production environments with versioned assets
+   */
+  MAX_AGE: 31536000,
+
+  /**
+   * Build the cache control header string
+   * @param maxAge - Maximum cache age in seconds (default: 1 year)
+   * @returns Cache-Control header value
+   */
+  buildHeader: (maxAge: number = 31536000): string => {
+    return `public, max-age=${maxAge}, immutable`;
+  },
+};
 
 /**
  * TypeScript type file path
