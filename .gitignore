@@ -2,6 +2,7 @@
 node_modules/
 .pnp
 .pnp.js
+package-lock.json
 
 # Testing
 coverage/
@@ -23,6 +24,8 @@ build/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Environment variables
 .env
@@ -30,6 +33,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
 # IDE
 .vscode/
@@ -37,14 +41,30 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+.vscode-test
+*.sublime-workspace
+*.sublime-project
 
 # OS
 .DS_Store
 Thumbs.db
+Desktop.ini
 
-# Generated sprite
+# Generated sprite files
 public/icons-sprite.svg
+public/icons-*.svg
 
 # TypeScript build info
 tsconfig.tsbuildinfo
 next-env.d.ts
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
