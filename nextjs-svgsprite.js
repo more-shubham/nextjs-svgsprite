@@ -5,6 +5,8 @@
  * - Generates an SVG sprite from all .svg files in /svg-icons
  * - Adds a /icons route to serve the sprite
  * - Provides configuration for the sprite generation
+ * 
+ * Compatible with Next.js 15+ (including Turbopack in Next.js 16+)
  */
 
 const path = require('path');
@@ -27,8 +29,12 @@ function withSvgSprite(pluginOptions = {}) {
   return (nextConfig = {}) => {
     return {
       ...nextConfig,
+      
+      // Add empty turbopack config to support Next.js 16+
+      turbopack: nextConfig.turbopack || {},
+      
       webpack(config, context) {
-        // Run the sprite build script during webpack compilation
+        // Run the sprite build script during webpack compilation (Next.js 15 and webpack mode)
         if (!context.isServer && context.dev) {
           try {
             execSync('node scripts/build-sprite.js', {
@@ -47,9 +53,6 @@ function withSvgSprite(pluginOptions = {}) {
 
         return config;
       },
-      
-      // Store options for use by other parts of the app
-      svgSpriteOptions: options,
     };
   };
 }

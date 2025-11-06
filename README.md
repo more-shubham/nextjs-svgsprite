@@ -1,6 +1,6 @@
 # Next.js SVG Sprite Plugin
 
-A complete Next.js 16+ plugin scaffold that automatically generates SVG sprites from individual icon files, provides a `/icons` route to serve them, and includes a reusable `<Icon>` React component.
+A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites from individual icon files, provides a `/icons` route to serve them, and includes a reusable `<Icon>` React component.
 
 ## Features
 
