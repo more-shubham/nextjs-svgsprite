@@ -4,14 +4,18 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 
 ## Features
 
-- 🎨 **Automatic SVG Sprite Generation** - Combines all `.svg` files from `/svg-icons` into a single sprite
-- 🚀 **Built-in `/icons` Route** - Serves the sprite with proper caching headers
-- ⚛️ **Reusable Icon Component** - Easy-to-use React component for displaying icons
-- 🔄 **Hot Reload Support** - Regenerates sprite during development
+- 🎨 **Automatic SVG Sprite Generation** - Generates separate sprite files per namespace
+- 🚀 **Built-in Static Routes** - Serves sprites with proper caching headers (SSG/Static)
+- ⚛️ **Reusable Icon Component** - Easy-to-use React component with automatic namespace detection
+- 🔄 **Hot Reload Support** - Regenerates sprites during development (with file watcher)
 - 📦 **Zero Configuration** - Works out of the box with sensible defaults
 - ♿ **Accessible** - Includes `IconWithLabel` component for accessibility
 - 🔷 **TypeScript Support** - Full type safety with autocomplete for icon names
 - 💡 **IntelliSense** - Get icon name suggestions as you type
+- 🔧 **Automatic Name Normalization** - Converts all naming conventions to kebab-case
+- 📁 **Namespace Support** - Separate sprite files per folder (e.g., `social/` → `icons-social.svg`)
+- 🔍 **Duplicate Detection** - Shows build-time errors when multiple files normalize to the same name
+- ⚡ **Performance Optimized** - Each namespace loads only its own icons
 
 ## Quick Start
 
@@ -33,13 +37,36 @@ svg-icons/
   └── search.svg
 ```
 
+**With Namespaces (optional):**
+Organize icons in subdirectories for namespacing:
+
+```
+svg-icons/
+  ├── home.svg
+  ├── user.svg
+  ├── social/
+  │   ├── facebook.svg
+  │   └── twitter.svg
+  └── brands/
+      ├── apple.svg
+      └── google.svg
+```
+
+This creates:
+- Namespaced icons: `social:facebook`, `social:twitter`, `brands:apple`, `brands:google`
+- Separate sprite files: `icons-social.svg`, `icons-brands.svg`
+- Root level icons in: `icons-sprite.svg` (default namespace)
+
 ### 3. Build the Sprite
 
 ```bash
 npm run build:sprite
 ```
 
-This generates `public/icons-sprite.svg` from all SVG files in `svg-icons/`.
+This generates separate sprite files in `public/`:
+- `public/icons-sprite.svg` - Default/root level icons
+- `public/icons-social.svg` - Social namespace icons
+- `public/icons-brands.svg` - Brands namespace icons
 
 ### 4. Use the Icon Component
 
@@ -230,29 +257,117 @@ For complete TypeScript documentation, including:
 
 See **[TYPESCRIPT.md](./TYPESCRIPT.md)**
 
+## Naming Conventions & Normalization
+
+All icon names are automatically normalized to **kebab-case** format. This means you can use any naming convention in your SVG files, and they'll be standardized:
+
+### Supported Naming Patterns
+
+| Original Filename | Normalized Name |
+|-------------------|-----------------|
+| `sunMoon.svg` | `sun-moon` |
+| `SunMoon.svg` | `sun-moon` |
+| `sun_moon.svg` | `sun-moon` |
+| `sun moon.svg` | `sun-moon` |
+| `sun-moon.svg` | `sun-moon` |
+| `sun  moon.svg` | `sun-moon` (multiple spaces) |
+
+### Duplicate Detection
+
+If multiple files normalize to the same name, the plugin will:
+1. ⚠️ Show a warning listing all duplicate files
+2. Keep only the first occurrence
+3. Remove the duplicates from the final sprite
+
+Example warning:
+```
+⚠️  Warning: Duplicate icon names detected after normalization:
+   "sun-moon" found in: [SunMoon, sun-moon, sunMoon, sun_moon]
+   These duplicates have been removed. Only the first occurrence is kept.
+```
+
+### Namespace Support
+
+Organize icons using folders. The folder structure becomes the namespace:
+
+**Simple Namespace:**
+```
+svg-icons/
+  └── social/
+      ├── facebook.svg  → social:facebook
+      └── twitter.svg   → social:twitter
+```
+
+**Nested Namespace:**
+```
+svg-icons/
+  └── sidebar/
+      └── nav items/
+          └── user menu.svg  → sidebar:nav-items:user-menu
+```
+
+**Using Namespaced Icons:**
+```tsx
+<Icon name="social:facebook" size={24} />
+<Icon name="sidebar:nav-items:user-menu" size={24} />
+```
+
+> **Note:** Folder names are also normalized to kebab-case, just like file names.
+
 ## How It Works
 
-### 1. Sprite Generation
+### 1. Sprite Generation (Per Namespace)
 
 The `scripts/build-sprite.js` script:
-- Reads all `.svg` files from the `svg-icons/` directory
-- Uses `svgstore` to combine them into a single sprite
-- Each icon becomes a `<symbol>` with an `id` matching its filename (without extension)
-- Outputs to `public/icons-sprite.svg`
+- Reads all `.svg` files from the `svg-icons/` directory (including subdirectories)
+- Normalizes all file and folder names to kebab-case
+- Groups icons by namespace based on folder structure
+- Generates **separate sprite files** for each namespace:
+  - Root level icons → `icons-sprite.svg` (default namespace)
+  - `social/` folder → `icons-social.svg`
+  - `brands/` folder → `icons-brands.svg`
+- Each icon becomes a `<symbol>` with an `id` (without namespace prefix in the file)
+- Shows build errors when duplicate normalized names are detected
 
-### 2. The `/icons` Route
+**Example Build Output:**
+```
+📦 Building sprite for namespace: brands
+  ✓ brands:apple (from brands/apple)
+  ✓ brands:google (from brands/google)
+  ✅ Sprite saved: icons-brands.svg (2 icons)
 
-The route handler at `app/icons/route.js`:
-- Serves the generated sprite at `/icons`
-- Sets appropriate caching headers for performance
-- Returns an empty SVG if the sprite doesn't exist
+📦 Building sprite for namespace: default
+  ✓ home (from home)
+  ✓ user (from user)
+  ✅ Sprite saved: icons-sprite.svg (6 icons)
+```
 
-### 3. The Icon Component
+### 2. Static Routes for Sprites
 
-The `Icon` component:
-- Uses SVG `<use>` to reference symbols in the sprite
-- Loads the sprite via `href="/icons#icon-name"`
+**Default Route** (`app/icons/route.ts`):
+- Serves the default sprite at `/icons`
+- Static generation with `force-static`
+
+**Namespace Routes** (`app/icons/[namespace]/route.ts`):
+- Serves namespace sprites at `/icons/{namespace}`
+- Static generation with `generateStaticParams()`
+- Examples: `/icons/social`, `/icons/brands`
+- All routes have proper caching headers for performance
+
+### 3. Smart Icon Component
+
+The `Icon` component automatically:
+- Detects namespace from icon name (e.g., `social:facebook`)
+- Loads from the correct sprite file:
+  - `<Icon name="home" />` → loads from `/icons#home`
+  - `<Icon name="social:facebook" />` → loads from `/icons/social#facebook`
+- Uses SVG `<use>` to reference symbols
 - Provides props for easy customization (size, color, className)
+
+**Performance Benefits:**
+- Each page only loads the sprite files it needs
+- Namespaced icons don't pollute the default sprite
+- Better code splitting and faster page loads
 
 ## Integration with Existing Projects
 

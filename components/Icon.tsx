@@ -37,6 +37,17 @@ export default function Icon({
     return null;
   }
 
+  // Determine sprite URL and icon ID based on namespace
+  const colonIndex = name.indexOf(':');
+  let spriteUrl = '/icons'; // Default sprite
+  let iconId: string = name;
+  
+  if (colonIndex > 0) {
+    const namespace = name.substring(0, colonIndex);
+    iconId = name.substring(colonIndex + 1);
+    spriteUrl = `/icons/${namespace}`;
+  }
+
   return (
     <svg
       width={size}
@@ -47,7 +58,7 @@ export default function Icon({
       aria-hidden="true"
       {...props}
     >
-      <use href={`/icons#${name}`} />
+      <use href={`${spriteUrl}#${iconId}`} />
     </svg>
   );
 }
@@ -84,6 +95,17 @@ export function IconWithLabel({
     return null;
   }
 
+  // Determine sprite URL and icon ID based on namespace
+  const colonIndex = name.indexOf(':');
+  let spriteUrl = '/icons'; // Default sprite
+  let iconId: string = name;
+  
+  if (colonIndex > 0) {
+    const namespace = name.substring(0, colonIndex);
+    iconId = name.substring(colonIndex + 1);
+    spriteUrl = `/icons/${namespace}`;
+  }
+
   return (
     <svg
       width={size}
@@ -95,7 +117,7 @@ export function IconWithLabel({
       aria-label={label || name}
       {...props}
     >
-      <use href={`/icons#${name}`} />
+      <use href={`${spriteUrl}#${iconId}`} />
     </svg>
   );
 }
