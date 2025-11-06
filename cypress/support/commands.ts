@@ -18,7 +18,7 @@ declare global {
        * @example cy.checkIconRendered('home', 24)
        */
       checkIconRendered(iconName: string, size?: number): Chainable<JQuery<HTMLElement>>;
-      
+
       /**
        * Custom command to verify SVG sprite route
        * @example cy.verifySpriteRoute('/icons')

@@ -29,21 +29,23 @@ export function normalizeIconName(name: string): string {
     throw new Error('Icon name must be a non-empty string');
   }
 
-  return name
-    // Replace multiple spaces with single space first
-    .replace(NORMALIZATION_PATTERNS.MULTIPLE_SPACES, ' ')
-    // Replace spaces with hyphens
-    .replace(NORMALIZATION_PATTERNS.SPACES, '-')
-    // Handle PascalCase and camelCase: insert hyphen before uppercase letters
-    .replace(NORMALIZATION_PATTERNS.CAMEL_CASE, '$1-$2')
-    // Replace underscores with hyphens
-    .replace(NORMALIZATION_PATTERNS.UNDERSCORES, '-')
-    // Convert to lowercase
-    .toLowerCase()
-    // Remove any duplicate hyphens
-    .replace(NORMALIZATION_PATTERNS.MULTIPLE_HYPHENS, '-')
-    // Remove leading/trailing hyphens
-    .replace(NORMALIZATION_PATTERNS.LEADING_TRAILING_HYPHENS, '');
+  return (
+    name
+      // Replace multiple spaces with single space first
+      .replace(NORMALIZATION_PATTERNS.MULTIPLE_SPACES, ' ')
+      // Replace spaces with hyphens
+      .replace(NORMALIZATION_PATTERNS.SPACES, '-')
+      // Handle PascalCase and camelCase: insert hyphen before uppercase letters
+      .replace(NORMALIZATION_PATTERNS.CAMEL_CASE, '$1-$2')
+      // Replace underscores with hyphens
+      .replace(NORMALIZATION_PATTERNS.UNDERSCORES, '-')
+      // Convert to lowercase
+      .toLowerCase()
+      // Remove any duplicate hyphens
+      .replace(NORMALIZATION_PATTERNS.MULTIPLE_HYPHENS, '-')
+      // Remove leading/trailing hyphens
+      .replace(NORMALIZATION_PATTERNS.LEADING_TRAILING_HYPHENS, '')
+  );
 }
 
 /**

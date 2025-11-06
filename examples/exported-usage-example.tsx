@@ -1,6 +1,6 @@
 /**
  * Example: Using the Exported Icon Component
- * 
+ *
  * This example shows how to use the pre-built Icon component
  * when installing nextjs-svgsprite as an npm package
  */
@@ -13,9 +13,7 @@ import { IconWithLabel, IconName, iconNames } from 'nextjs-svgsprite/Icon';
 export default function ExportedUsageExample() {
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Exported Icon Component Example
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">Exported Icon Component Example</h1>
 
       {/* Basic Icons */}
       <section className="mb-8">
@@ -69,15 +67,10 @@ export default function ExportedUsageExample() {
       {/* All Available Icons */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">All Available Icons</h2>
-        <p className="text-sm text-gray-600 mb-4">
-          Total icons: {iconNames.length}
-        </p>
+        <p className="text-sm text-gray-600 mb-4">Total icons: {iconNames.length}</p>
         <div className="grid grid-cols-5 gap-4">
           {iconNames.map((iconName) => (
-            <div 
-              key={iconName} 
-              className="flex flex-col items-center p-2 border rounded"
-            >
+            <div key={iconName} className="flex flex-col items-center p-2 border rounded">
               <Icon name={iconName as IconName} size={32} />
               <span className="text-xs mt-2 text-center">{iconName}</span>
             </div>
@@ -90,26 +83,26 @@ export default function ExportedUsageExample() {
 
 /**
  * Setup Instructions:
- * 
+ *
  * 1. Install the package:
  *    npm install nextjs-svgsprite
- * 
+ *
  * 2. Create route handlers in your Next.js app:
- * 
+ *
  *    app/icons/route.ts:
  *    ```typescript
  *    export { GET, dynamic } from 'nextjs-svgsprite/icons/route';
  *    ```
- * 
+ *
  *    app/icons/[namespace]/route.ts:
  *    ```typescript
  *    export { GET, dynamic, generateStaticParams } from 'nextjs-svgsprite/icons/[namespace]/route';
  *    ```
- * 
+ *
  * 3. Use the Icon component:
  *    ```typescript
  *    import Icon from 'nextjs-svgsprite/Icon';
- *    
+ *
  *    <Icon name="home" size={24} />
  *    ```
  */

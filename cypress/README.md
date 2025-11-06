@@ -5,24 +5,28 @@ This project includes comprehensive end-to-end (E2E) testing using Cypress to en
 ## Test Coverage
 
 ### 1. Icon Component Tests (`icon-component.cy.ts`)
+
 - **Basic Rendering**: Tests icon rendering with default props
 - **Different Sizes**: Validates icons render correctly at 16px, 24px, 32px, and 48px
 - **Custom Colors**: Tests custom color application (red, blue, green, purple, gold)
 - **Error Handling**: Validates graceful handling of missing icon names
 
 ### 2. IconWithLabel Component Tests (`icon-with-label.cy.ts`)
+
 - **Accessibility**: Tests role="img" and aria-label attributes
 - **Screen Reader Support**: Validates meaningful labels for assistive technologies
 - **Keyboard Navigation**: Ensures icons are keyboard accessible
 - **Differentiation**: Tests distinction between basic and labeled icons
 
 ### 3. Namespaced Icons Tests (`namespaced-icons.cy.ts`)
+
 - **Social Namespace**: Tests `social:facebook` and `social:twitter` icons
 - **Brands Namespace**: Tests `brands:apple` and `brands:google` icons
 - **Sprite Separation**: Validates icons load from correct sprite files
 - **Display**: Tests namespace label rendering
 
 ### 4. Server Routes Tests (`server-routes.cy.ts`)
+
 - **Default Route**: Tests `/icons` endpoint serving default sprite
 - **Namespace Routes**: Tests `/icons/social` and `/icons/brands` endpoints
 - **Content Validation**: Validates SVG content and symbol elements
@@ -31,12 +35,14 @@ This project includes comprehensive end-to-end (E2E) testing using Cypress to en
 - **SSG Integration**: Validates static generation and fast responses
 
 ### 5. Normalized Names Tests (`normalized-names.cy.ts`)
+
 - **Kebab-case Normalization**: Tests sun-moon icon normalization
 - **Consistency**: Validates all icon names use kebab-case format
 - **Sprite Content**: Tests normalized names in sprite files
 - **Documentation**: Validates normalization examples are shown
 
 ### 6. Next.js 16 Integration Tests (`nextjs-integration.cy.ts`)
+
 - **Framework Features**: Tests Next.js 16 app router functionality
 - **React 19 Compatibility**: Validates React 19 component rendering
 - **TypeScript Support**: Tests TypeScript integration and type safety
@@ -44,6 +50,7 @@ This project includes comprehensive end-to-end (E2E) testing using Cypress to en
 - **SSG/SSR**: Tests static site generation features
 
 ### 7. Full Integration Tests (`integration.cy.js`) - JavaScript Version
+
 - **Complete Flow**: Tests full application workflow
 - **JavaScript Compatibility**: Ensures tests work with plain JavaScript
 - **Cross-browser Support**: Tests SVG rendering across browsers
@@ -53,12 +60,14 @@ This project includes comprehensive end-to-end (E2E) testing using Cypress to en
 ## Running Tests
 
 ### Interactive Mode (Development)
+
 ```bash
 # Start dev server and open Cypress
 npm run test:e2e:dev
 ```
 
 ### Headless Mode (CI/CD)
+
 ```bash
 # Build and test production build
 npm run build
@@ -66,6 +75,7 @@ npm run test:e2e
 ```
 
 ### Manual Control
+
 ```bash
 # Start the application
 npm run dev  # or npm start for production
@@ -97,17 +107,21 @@ cypress/
 ## Custom Commands
 
 ### `cy.checkIconRendered(iconName, size)`
+
 Checks if an SVG icon is rendered correctly with the specified name and size.
 
 **Example:**
+
 ```typescript
 cy.checkIconRendered('home', 24);
 ```
 
 ### `cy.verifySpriteRoute(route)`
+
 Verifies a sprite route returns valid SVG content with proper headers.
 
 **Example:**
+
 ```typescript
 cy.verifySpriteRoute('/icons/social');
 ```
@@ -144,14 +158,17 @@ npm run test:e2e         # Run E2E tests
 ## Troubleshooting
 
 ### Tests Fail to Start
+
 - Ensure the server is running on port 3000
 - Check that sprites are built: `npm run build:sprite`
 
 ### Video/Screenshot Issues
+
 - Videos and screenshots are stored in `cypress/videos/` and `cypress/screenshots/`
 - These folders are gitignored
 
 ### TypeScript Errors
+
 - Ensure `cypress/tsconfig.json` is present
 - Check that type definitions are installed
 
@@ -166,6 +183,7 @@ npm run test:e2e         # Run E2E tests
 ## Contributing
 
 When adding new features:
+
 1. Write tests first (TDD approach)
 2. Ensure tests cover both TypeScript and JavaScript scenarios
 3. Test accessibility features

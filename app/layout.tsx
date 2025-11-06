@@ -5,11 +5,7 @@ export const metadata: Metadata = {
   description: 'Example application using the Next.js SVG Sprite plugin',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>

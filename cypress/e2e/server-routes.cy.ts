@@ -160,41 +160,43 @@ describe('Server Routes - Static Generation (SSG)', () => {
 
   it('should have consistent responses', () => {
     let firstResponse: string;
-    
-    cy.request('/icons').then((response) => {
-      firstResponse = response.body;
-      expect(firstResponse).to.include('<svg');
-    }).then(() => {
-      // Make second request
-      cy.request('/icons').then((response) => {
-        // Should return identical content
-        expect(response.body).to.equal(firstResponse);
+
+    cy.request('/icons')
+      .then((response) => {
+        firstResponse = response.body;
+        expect(firstResponse).to.include('<svg');
+      })
+      .then(() => {
+        // Make second request
+        cy.request('/icons').then((response) => {
+          // Should return identical content
+          expect(response.body).to.equal(firstResponse);
+        });
       });
-    });
   });
 });
 
 describe('Server Routes - Integration with Components', () => {
   it('should serve sprites that work with Icon component', () => {
     cy.visit('/');
-    
+
     // Verify sprite route is accessible
     cy.request('/icons').then((response) => {
       expect(response.status).to.eq(200);
     });
-    
+
     // Verify icons are rendered
     cy.get('svg use[href^="/icons#"]').should('exist');
   });
 
   it('should serve namespace sprites that work with namespaced icons', () => {
     cy.visit('/');
-    
+
     // Verify social sprite route
     cy.request('/icons/social').then((response) => {
       expect(response.status).to.eq(200);
     });
-    
+
     // Verify social icons are rendered
     cy.get('svg use[href^="/icons/social#"]').should('exist');
   });

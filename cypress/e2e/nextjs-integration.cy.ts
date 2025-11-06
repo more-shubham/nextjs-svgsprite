@@ -35,10 +35,10 @@ describe('Next.js 16 Framework - Page Rendering', () => {
 describe('Next.js 16 Framework - Static Site Generation (SSG)', () => {
   it('should pre-render pages at build time', () => {
     cy.visit('/');
-    
+
     // Page should load quickly (pre-rendered)
     cy.contains('Next.js SVG Sprite Plugin Example').should('be.visible');
-    
+
     // Check for Next.js indicators
     cy.get('body').should('have.attr', 'data-new-gr-c-s-check-loaded');
   });
@@ -59,7 +59,7 @@ describe('Next.js 16 Framework - Static Site Generation (SSG)', () => {
 describe('Next.js 16 Framework - App Router', () => {
   it('should use app router structure', () => {
     cy.visit('/');
-    
+
     // App router should handle routes properly
     cy.location('pathname').should('eq', '/');
   });
@@ -80,11 +80,13 @@ describe('Next.js 16 Framework - Performance', () => {
   it('should load the page quickly', () => {
     const startTime = Date.now();
     cy.visit('/');
-    cy.contains('Next.js SVG Sprite Plugin Example').should('be.visible').then(() => {
-      const loadTime = Date.now() - startTime;
-      // Page should load in reasonable time
-      expect(loadTime).to.be.lessThan(5000);
-    });
+    cy.contains('Next.js SVG Sprite Plugin Example')
+      .should('be.visible')
+      .then(() => {
+        const loadTime = Date.now() - startTime;
+        // Page should load in reasonable time
+        expect(loadTime).to.be.lessThan(5000);
+      });
   });
 
   it('should have fast static route responses', () => {
@@ -113,7 +115,7 @@ describe('React 19 Compatibility - Component Rendering', () => {
 
   it('should handle React hooks properly', () => {
     cy.visit('/');
-    
+
     // Components should render without errors
     cy.get('svg').should('have.length.at.least', 10);
   });
@@ -153,14 +155,14 @@ describe('TypeScript Support - Type Safety', () => {
 describe('Next.js 16 Framework - Client-Side Navigation', () => {
   it('should handle client-side interactions', () => {
     cy.visit('/');
-    
+
     // Test that links work
     cy.contains('a', '/icons').should('have.attr', 'href', '/icons');
   });
 
   it('should maintain state during navigation', () => {
     cy.visit('/');
-    
+
     // Icons should persist
     cy.get('svg').should('have.length.at.least', 10);
   });

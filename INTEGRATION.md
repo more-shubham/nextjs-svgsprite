@@ -66,6 +66,7 @@ svg-icons/
 Modify your `next.config.js` to use the plugin:
 
 **Before:**
+
 ```javascript
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -76,6 +77,7 @@ module.exports = nextConfig;
 ```
 
 **After:**
+
 ```javascript
 /** @type {import('next').NextConfig} */
 const withSvgSprite = require('./nextjs-svgsprite');
@@ -231,7 +233,7 @@ export const dynamic = 'force-static';
 export async function GET() {
   try {
     const spritePath = path.join(process.cwd(), 'public', 'icons-sprite.svg');
-    
+
     if (!fs.existsSync(spritePath)) {
       return new NextResponse(
         '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>',
@@ -241,12 +243,12 @@ export async function GET() {
             'Content-Type': 'image/svg+xml',
             'Cache-Control': 'public, max-age=31536000, immutable',
           },
-        }
+        },
       );
     }
 
     const spriteContent = fs.readFileSync(spritePath, 'utf8');
-    
+
     return new NextResponse(spriteContent, {
       status: 200,
       headers: {
@@ -263,7 +265,7 @@ export async function GET() {
         headers: {
           'Content-Type': 'image/svg+xml',
         },
-      }
+      },
     );
   }
 }
@@ -310,11 +312,7 @@ import { IconWithLabel } from '@/components/Icon';
 function AccessibleButton() {
   return (
     <button>
-      <IconWithLabel 
-        name="search" 
-        label="Search the site" 
-        size={20} 
-      />
+      <IconWithLabel name="search" label="Search the site" size={20} />
     </button>
   );
 }
@@ -328,7 +326,7 @@ import Icon from '@/components/Icon';
 function IconList({ items }) {
   return (
     <div>
-      {items.map(item => (
+      {items.map((item) => (
         <div key={item.id}>
           <Icon name={item.iconName} size={24} />
           <span>{item.label}</span>
@@ -345,14 +343,15 @@ function IconList({ items }) {
 
 ```javascript
 withSvgSprite({
-  svgDir: 'svg-icons',              // Directory containing SVG files
-  outputPath: 'public/icons-sprite.svg',  // Output path for the sprite
-})
+  svgDir: 'svg-icons', // Directory containing SVG files
+  outputPath: 'public/icons-sprite.svg', // Output path for the sprite
+});
 ```
 
 ### Customizing Icon Names
 
 By default, the icon name is the SVG filename without the extension. For example:
+
 - `home.svg` → `<Icon name="home" />`
 - `arrow-right.svg` → `<Icon name="arrow-right" />`
 - `user-profile.svg` → `<Icon name="user-profile" />`
@@ -372,6 +371,7 @@ npm run build
 ```
 
 This runs:
+
 1. `npm run build:sprite` - Generates the sprite
 2. `next build` - Builds your Next.js app
 
@@ -391,21 +391,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build sprite
         run: npm run build:sprite
-        
+
       - name: Build Next.js
         run: npm run build
-        
+
       - name: Deploy
         run: # your deployment command
 ```
@@ -415,6 +415,7 @@ jobs:
 When deploying to Vercel, ensure your build command includes sprite generation:
 
 In your Vercel project settings:
+
 - **Build Command**: `npm run build`
 - **Output Directory**: `.next`
 
@@ -437,6 +438,7 @@ This means the browser will cache the sprite for 1 year.
 The sprite size depends on the number and complexity of your icons. Best practices:
 
 1. **Optimize SVG files** before adding them to `svg-icons/`:
+
    ```bash
    npm install -g svgo
    svgo svg-icons/*.svg
@@ -449,6 +451,7 @@ The sprite size depends on the number and complexity of your icons. Best practic
 ### Loading Strategy
 
 The Icon component uses `<use>` with an external reference, which means:
+
 - The sprite is loaded once and cached
 - All icons share the same HTTP request
 - No JavaScript is needed to display icons
@@ -460,6 +463,7 @@ The Icon component uses `<use>` with an external reference, which means:
 **Problem**: Icons don't show up on the page
 
 **Solutions**:
+
 1. Check that the sprite was generated: `ls -la public/icons-sprite.svg`
 2. Visit `/icons` in your browser to verify the route works
 3. Check browser console for errors
@@ -470,6 +474,7 @@ The Icon component uses `<use>` with an external reference, which means:
 **Problem**: Changes to SVG files don't appear
 
 **Solutions**:
+
 1. Delete the generated sprite: `rm public/icons-sprite.svg`
 2. Regenerate: `npm run build:sprite`
 3. Clear Next.js cache: `rm -rf .next`
@@ -486,6 +491,7 @@ The Icon component uses `<use>` with an external reference, which means:
 **Problem**: Build fails with module not found
 
 **Solutions**:
+
 1. Ensure `svgstore` is installed: `npm install --save-dev svgstore`
 2. Verify all files are in the correct locations
 3. Check that `scripts/build-sprite.js` is executable
@@ -495,6 +501,7 @@ The Icon component uses `<use>` with an external reference, which means:
 ### From react-icons
 
 **Before:**
+
 ```jsx
 import { FaHome, FaUser } from 'react-icons/fa';
 
@@ -503,6 +510,7 @@ import { FaHome, FaUser } from 'react-icons/fa';
 ```
 
 **After:**
+
 ```jsx
 import Icon from '@/components/Icon';
 
@@ -513,17 +521,19 @@ import Icon from '@/components/Icon';
 ### From SVG Imports
 
 **Before:**
+
 ```jsx
 import HomeIcon from './icons/home.svg';
 
-<HomeIcon width={24} height={24} />
+<HomeIcon width={24} height={24} />;
 ```
 
 **After:**
+
 ```jsx
 import Icon from '@/components/Icon';
 
-<Icon name="home" size={24} />
+<Icon name="home" size={24} />;
 ```
 
 ## Advanced Customization
@@ -536,13 +546,7 @@ Create a custom wrapper with default styles:
 import Icon from '@/components/Icon';
 
 export function StyledIcon({ name, ...props }) {
-  return (
-    <Icon 
-      name={name}
-      className="inline-block transition-colors duration-200"
-      {...props}
-    />
-  );
+  return <Icon name={name} className="inline-block transition-colors duration-200" {...props} />;
 }
 ```
 
@@ -576,6 +580,7 @@ To support multiple sprite directories:
 ## Support
 
 For issues, questions, or contributions:
+
 1. Check the troubleshooting section
 2. Review the examples in this guide
 3. Open an issue on GitHub

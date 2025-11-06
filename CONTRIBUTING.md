@@ -26,22 +26,26 @@ This project follows a professional code of conduct. Be respectful, collaborativ
 ### Setup
 
 1. Fork and clone the repository:
+
 ```bash
 git clone https://github.com/your-username/nextjs-svgsprite.git
 cd nextjs-svgsprite
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Build the sprite:
+
 ```bash
 npm run build:sprite
 ```
 
 4. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -51,11 +55,13 @@ npm run dev
 ### Before Making Changes
 
 1. **Create a new branch** from `main`:
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 2. **Run validation** to ensure everything works:
+
 ```bash
 npm run validate
 ```
@@ -65,12 +71,14 @@ npm run validate
 1. **Write clean, documented code** following our coding standards
 2. **Test your changes** thoroughly
 3. **Run linting and formatting**:
+
 ```bash
 npm run format
 npm run lint:fix
 ```
 
 4. **Check TypeScript types**:
+
 ```bash
 npm run type-check
 ```
@@ -78,11 +86,13 @@ npm run type-check
 ### Before Committing
 
 Always run the validation script:
+
 ```bash
 npm run validate
 ```
 
 This runs:
+
 - TypeScript type checking
 - ESLint linting
 - Prettier formatting check
@@ -122,6 +132,7 @@ nextjs-svgsprite/
 4. **Document types** with JSDoc comments
 
 Example:
+
 ```typescript
 /**
  * Normalize icon name to kebab-case
@@ -159,6 +170,7 @@ We use Prettier for code formatting and ESLint for code quality. Configuration:
 4. **Type documentation** for exported types
 
 Example JSDoc:
+
 ```typescript
 /**
  * Parse a namespaced icon name into its components
@@ -181,6 +193,7 @@ Example JSDoc:
 4. **Log errors** for debugging
 
 Example:
+
 ```typescript
 if (!name || typeof name !== 'string') {
   throw new Error('Icon name must be a non-empty string');
@@ -237,17 +250,20 @@ refactor(utils): extract normalization logic to separate module
 
 1. **Update documentation** if needed
 2. **Run all checks**:
+
 ```bash
 npm run validate
 npm run build:sprite
 npm run build
 ```
+
 3. **Test your changes** manually
 4. **Update CHANGELOG.md** if applicable
 
 ### PR Title
 
 Use the same format as commit messages:
+
 ```
 feat(component): add new feature
 ```
@@ -255,6 +271,7 @@ feat(component): add new feature
 ### PR Description
 
 Include:
+
 - **What**: What changes were made
 - **Why**: Why these changes were needed
 - **How**: How the changes work
@@ -270,6 +287,7 @@ Include:
 ## Questions?
 
 If you have questions, please:
+
 1. Check existing issues and discussions
 2. Read the documentation thoroughly
 3. Open a new issue with the "question" label

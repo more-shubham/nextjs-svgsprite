@@ -1,9 +1,9 @@
 /**
  * Icon Component
- * 
+ *
  * A reusable React component for displaying SVG icons from bundled sprites
  * This component works standalone and includes all icons from the package
- * 
+ *
  * @example
  * import Icon from 'nextjs-svgsprite/Icon';
  * <Icon name="home" size={24} className="text-blue-500" />
@@ -35,13 +35,13 @@ function parseSpriteUrl(name: string): { spriteUrl: string; iconId: string } {
   const colonIndex = name.indexOf(':');
   let spriteUrl = '/icons'; // Default sprite
   let iconId: string = name;
-  
+
   if (colonIndex > 0) {
     const namespace = name.substring(0, colonIndex);
     iconId = name.substring(colonIndex + 1);
     spriteUrl = `/icons/${namespace}`;
   }
-  
+
   return { spriteUrl, iconId };
 }
 

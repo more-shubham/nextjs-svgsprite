@@ -13,7 +13,7 @@ describe('Complete Integration - Full Application Flow', () => {
 
   it('should display all main sections', () => {
     cy.visit('/');
-    
+
     const sections = [
       'Basic Icons',
       'TypeScript Autocomplete',
@@ -22,9 +22,9 @@ describe('Complete Integration - Full Application Flow', () => {
       'With Labels (Accessible)',
       'Namespaced Icons',
       'Normalized Names',
-      'Sprite Information'
+      'Sprite Information',
     ];
-    
+
     sections.forEach((section) => {
       cy.contains(section).should('be.visible');
     });
@@ -32,11 +32,11 @@ describe('Complete Integration - Full Application Flow', () => {
 
   it('should render all icon types correctly', () => {
     cy.visit('/');
-    
+
     // Basic icons
     cy.get('svg use[href*="#home"]').should('exist');
     cy.get('svg use[href*="#user"]').should('exist');
-    
+
     // Namespaced icons
     cy.get('svg use[href*="/icons/social#facebook"]').should('exist');
     cy.get('svg use[href*="/icons/brands#apple"]').should('exist');
@@ -62,7 +62,7 @@ describe('JavaScript Compatibility - Icon Component', () => {
   it('should support dynamic icon rendering', () => {
     // Icons are rendered dynamically in the page
     const iconNames = ['home', 'user', 'settings', 'search', 'star'];
-    
+
     iconNames.forEach((name) => {
       cy.get(`svg use[href*="${name}"]`).should('exist');
     });
@@ -74,7 +74,7 @@ describe('JavaScript Compatibility - Icon Component', () => {
     cy.get('svg[width="24"]').should('exist');
     cy.get('svg[width="32"]').should('exist');
     cy.get('svg[width="48"]').should('exist');
-    
+
     // Different colors
     cy.get('svg[fill="red"]').should('exist');
     cy.get('svg[fill="blue"]').should('exist');
@@ -94,13 +94,16 @@ describe('JavaScript Compatibility - Route Handlers', () => {
   it('should work with fetch API', () => {
     cy.visit('/');
     cy.window().then((win) => {
-      return win.fetch('/icons').then((response) => {
-        expect(response.ok).to.be.true;
-        expect(response.status).to.eq(200);
-        return response.text();
-      }).then((text) => {
-        expect(text).to.include('<svg');
-      });
+      return win
+        .fetch('/icons')
+        .then((response) => {
+          expect(response.ok).to.be.true;
+          expect(response.status).to.eq(200);
+          return response.text();
+        })
+        .then((text) => {
+          expect(text).to.include('<svg');
+        });
     });
   });
 });
@@ -159,7 +162,7 @@ describe('User Experience - Visual Verification', () => {
 describe('Performance and Loading', () => {
   it('should load sprites efficiently', () => {
     cy.visit('/');
-    
+
     // Check that page loads without delay
     cy.get('svg').should('have.length.at.least', 10);
   });
@@ -181,7 +184,7 @@ describe('Error Handling and Edge Cases', () => {
   it('should handle missing sprites gracefully', () => {
     cy.request({
       url: '/icons/nonexistent',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((response) => {
       expect(response.status).to.be.oneOf([200, 404]);
     });
@@ -191,12 +194,12 @@ describe('Error Handling and Edge Cases', () => {
     cy.visit('/', {
       onBeforeLoad(win) {
         cy.stub(win.console, 'error').as('consoleError');
-      }
+      },
     });
-    
+
     // Wait for page to load
     cy.contains('Next.js SVG Sprite Plugin Example').should('be.visible');
-    
+
     // Check no errors logged (excluding known framework warnings)
     cy.get('@consoleError').should('not.have.been.called');
   });

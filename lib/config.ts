@@ -87,7 +87,8 @@ export const FILE_ENCODING = 'utf8';
 /**
  * Empty SVG sprite placeholder
  */
-export const EMPTY_SPRITE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>';
+export const EMPTY_SPRITE_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>';
 
 /**
  * Build messages

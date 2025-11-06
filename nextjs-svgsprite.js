@@ -156,7 +156,9 @@ function withSvgSprite(pluginOptions = {}) {
                 });
               } else {
                 console.warn(`⚠️  SVG directory not found at: ${svgDirPath}`);
-                console.warn('   Create the directory and add SVG files to enable sprite generation.');
+                console.warn(
+                  '   Create the directory and add SVG files to enable sprite generation.',
+                );
               }
             }
           } catch (error) {

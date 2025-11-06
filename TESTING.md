@@ -34,6 +34,7 @@ npm run test:e2e:dev
 ```
 
 This command:
+
 1. Starts the Next.js development server on `http://localhost:3000`
 2. Opens the Cypress Test Runner
 3. Allows you to select and run tests interactively
@@ -80,7 +81,9 @@ cypress/
 ## 🧪 Test Coverage
 
 ### 1. **Icon Component Tests** (`icon-component.cy.ts`)
+
 Tests the basic Icon component functionality:
+
 - ✅ Basic rendering with default props
 - ✅ Different sizes (16px, 24px, 32px, 48px)
 - ✅ Custom colors (red, blue, green, purple, gold)
@@ -89,7 +92,9 @@ Tests the basic Icon component functionality:
 - ✅ Error handling for missing icons
 
 ### 2. **IconWithLabel Component Tests** (`icon-with-label.cy.ts`)
+
 Tests accessibility features:
+
 - ✅ `role="img"` attribute
 - ✅ `aria-label` attributes
 - ✅ Screen reader support
@@ -97,7 +102,9 @@ Tests accessibility features:
 - ✅ Distinction from basic Icon component
 
 ### 3. **Namespaced Icons Tests** (`namespaced-icons.cy.ts`)
+
 Tests namespace organization:
+
 - ✅ Social namespace (`social:facebook`, `social:twitter`)
 - ✅ Brands namespace (`brands:apple`, `brands:google`)
 - ✅ Sprite separation (different files for different namespaces)
@@ -105,7 +112,9 @@ Tests namespace organization:
 - ✅ No cross-contamination between namespaces
 
 ### 4. **Server Routes Tests** (`server-routes.cy.ts`)
+
 Tests API route handlers:
+
 - ✅ Default sprite route (`/icons`)
 - ✅ Namespace routes (`/icons/social`, `/icons/brands`)
 - ✅ Valid SVG content
@@ -117,14 +126,18 @@ Tests API route handlers:
 - ✅ Integration with frontend components
 
 ### 5. **Normalized Names Tests** (`normalized-names.cy.ts`)
+
 Tests icon name normalization:
+
 - ✅ Kebab-case normalization (`sun-moon`)
 - ✅ Consistency across all icons
 - ✅ Sprite content uses normalized names
 - ✅ Documentation of normalization
 
 ### 6. **Next.js 16 Integration Tests** (`nextjs-integration.cy.ts`)
+
 Tests framework features:
+
 - ✅ Next.js 16 app router
 - ✅ Static Site Generation (SSG)
 - ✅ Route handlers
@@ -135,7 +148,9 @@ Tests framework features:
 - ✅ Client-side navigation
 
 ### 7. **Full Integration Tests** (`integration.cy.js`)
+
 JavaScript version testing complete application flow:
+
 - ✅ Complete application workflow
 - ✅ JavaScript compatibility
 - ✅ Cross-browser support
@@ -147,24 +162,30 @@ JavaScript version testing complete application flow:
 ## 🛠 Custom Cypress Commands
 
 ### `cy.checkIconRendered(iconName, size)`
+
 Verifies an SVG icon is rendered correctly.
 
 **Parameters:**
+
 - `iconName` (string): The name of the icon (e.g., "home")
 - `size` (number, optional): Expected size in pixels (default: 24)
 
 **Example:**
+
 ```typescript
 cy.checkIconRendered('home', 24);
 ```
 
 ### `cy.verifySpriteRoute(route)`
+
 Verifies a sprite route returns valid SVG content.
 
 **Parameters:**
+
 - `route` (string): The route to verify (e.g., "/icons/social")
 
 **Example:**
+
 ```typescript
 cy.verifySpriteRoute('/icons/social');
 ```
@@ -229,6 +250,7 @@ npm run cypress
 ```
 
 This opens the Cypress Test Runner where you can:
+
 - See tests run in real-time
 - Inspect elements
 - View screenshots
@@ -281,6 +303,7 @@ describe('My New Feature', () => {
 **Problem:** Server not running or wrong port
 
 **Solution:**
+
 ```bash
 # Make sure the dev server is running
 npm run dev
@@ -320,6 +343,7 @@ e2e: {
 **Problem:** Tests fail because sprites don't exist
 
 **Solution:**
+
 ```bash
 # Build sprites first
 npm run build:sprite
@@ -345,19 +369,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build sprites
         run: npm run build:sprite
-      
+
       - name: Build application
         run: npm run build
-      
+
       - name: Run E2E tests
         run: npm run test:e2e
-      
+
       - uses: actions/upload-artifact@v3
         if: failure()
         with:

@@ -66,7 +66,9 @@ export async function generateStaticParams() {
     // Find all sprite files (icons-*.svg except icons-sprite.svg which is default)
     const files = fs.readdirSync(publicDir);
     const namespaces = files
-      .filter((file) => file.startsWith('icons-') && file.endsWith('.svg') && file !== 'icons-sprite.svg')
+      .filter(
+        (file) => file.startsWith('icons-') && file.endsWith('.svg') && file !== 'icons-sprite.svg',
+      )
       .map((file) => {
         // Extract namespace from filename: icons-social.svg -> social
         const match = file.match(/^icons-(.+)\.svg$/);

@@ -96,21 +96,23 @@ function normalizeIconName(name) {
     throw new Error('Icon name must be a non-empty string');
   }
 
-  return name
-    // Replace multiple spaces with single space first
-    .replace(/\s+/g, ' ')
-    // Replace spaces with hyphens
-    .replace(/\s/g, '-')
-    // Handle PascalCase and camelCase: insert hyphen before uppercase letters
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    // Replace underscores with hyphens
-    .replace(/_/g, '-')
-    // Convert to lowercase
-    .toLowerCase()
-    // Remove any duplicate hyphens
-    .replace(/-+/g, '-')
-    // Remove leading/trailing hyphens
-    .replace(/^-|-$/g, '');
+  return (
+    name
+      // Replace multiple spaces with single space first
+      .replace(/\s+/g, ' ')
+      // Replace spaces with hyphens
+      .replace(/\s/g, '-')
+      // Handle PascalCase and camelCase: insert hyphen before uppercase letters
+      .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+      // Replace underscores with hyphens
+      .replace(/_/g, '-')
+      // Convert to lowercase
+      .toLowerCase()
+      // Remove any duplicate hyphens
+      .replace(/-+/g, '-')
+      // Remove leading/trailing hyphens
+      .replace(/^-|-$/g, '')
+  );
 }
 
 /**
@@ -282,7 +284,9 @@ export const iconNames = [${iconNames.map((name) => `'${name}'`).join(', ')}] as
 
     if (iconNames.length === 0) {
       console.warn('⚠️  No icons found. IconName type is set to "never" to enforce type safety.');
-      console.warn('   Add SVG files to svg-icons/ and re-run build:sprite to generate icon types.');
+      console.warn(
+        '   Add SVG files to svg-icons/ and re-run build:sprite to generate icon types.',
+      );
     }
   } catch (error) {
     console.error(`❌ Error generating TypeScript types: ${error.message}`);

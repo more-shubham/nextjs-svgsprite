@@ -1,6 +1,6 @@
 /**
  * TypeScript Example: Type-Safe Icon Usage
- * 
+ *
  * This file demonstrates how TypeScript provides:
  * 1. Type safety for icon names
  * 2. Autocomplete suggestions in your IDE
@@ -19,7 +19,7 @@ export function BasicExample() {
       <Icon name="user" size={24} />
       <Icon name="settings" size={24} />
       <Icon name="search" size={24} />
-      
+
       {/* ❌ This would cause a TypeScript error (uncomment to see) */}
       {/* <Icon name="invalid-icon" size={24} /> */}
       {/* Error: Type '"invalid-icon"' is not assignable to type 'IconName' */}
@@ -79,7 +79,7 @@ export function StatusIcon({ isActive }: { isActive: boolean }) {
   // TypeScript ensures both options are valid icon names
   const iconName: IconName = isActive ? 'home' : 'settings';
   const color = isActive ? 'green' : 'gray';
-  
+
   return <Icon name={iconName} color={color} size={24} />;
 }
 
@@ -110,7 +110,7 @@ export function DynamicIconRenderer({ iconNameFromApi }: { iconNameFromApi: stri
     console.warn(`Invalid icon name: ${iconNameFromApi}`);
     return <Icon name="home" size={24} />; // Fallback to default
   }
-  
+
   return <Icon name={iconNameFromApi} size={24} />;
 }
 
@@ -130,8 +130,8 @@ export function AccessibleIcons() {
 export function CustomPropsExample() {
   return (
     <div>
-      <Icon 
-        name="home" 
+      <Icon
+        name="home"
         size={24}
         onClick={() => console.log('Clicked!')}
         style={{ cursor: 'pointer' }}
@@ -171,16 +171,8 @@ export function IconButton({ icon, label, onClick, size = 24 }: IconButtonProps)
 export function IconButtonExample() {
   return (
     <div>
-      <IconButton 
-        icon="home" 
-        label="Go home" 
-        onClick={() => console.log('Home clicked')} 
-      />
-      <IconButton 
-        icon="search" 
-        label="Search" 
-        onClick={() => console.log('Search clicked')} 
-      />
+      <IconButton icon="home" label="Go home" onClick={() => console.log('Home clicked')} />
+      <IconButton icon="search" label="Search" onClick={() => console.log('Search clicked')} />
     </div>
   );
 }
@@ -190,13 +182,13 @@ import { useState } from 'react';
 
 export function IconSelector() {
   const [selectedIcon, setSelectedIcon] = useState<IconName>('home');
-  
+
   return (
     <div>
       <div style={{ marginBottom: '1rem' }}>
         <Icon name={selectedIcon} size={64} />
       </div>
-      
+
       <div style={{ display: 'flex', gap: '0.5rem' }}>
         {iconNames.map((iconName) => (
           <button
@@ -213,7 +205,7 @@ export function IconSelector() {
           </button>
         ))}
       </div>
-      
+
       <p style={{ marginTop: '1rem' }}>
         Selected: <code>{selectedIcon}</code>
       </p>
