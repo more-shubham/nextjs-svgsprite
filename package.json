@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "A Next.js plugin for automatic SVG sprite generation with /icons route and reusable Icon component",
   "main": "nextjs-svgsprite.js",
+  "exports": {
+    ".": "./nextjs-svgsprite.js",
+    "./Icon": "./components/Icon.tsx",
+    "./icon-types": "./components/icon-types.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run build:sprite && next build",
@@ -20,10 +25,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
     "next": "^16.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "svgstore": "^3.0.1"
+    "svgstore": "^3.0.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "next": ">=15.0.0",
