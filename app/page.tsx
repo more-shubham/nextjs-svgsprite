@@ -61,6 +61,49 @@ export default function HomePage() {
       </section>
 
       <section style={{ marginTop: '2rem' }}>
+        <h2>Namespaced Icons</h2>
+        <p style={{ marginBottom: '1rem' }}>
+          Icons organized in folders use namespace syntax (e.g., <code>social:facebook</code>)
+        </p>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
+          <div style={{ textAlign: 'center' }}>
+            <Icon name="social:facebook" size={32} />
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>social:facebook</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <Icon name="social:twitter" size={32} />
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>social:twitter</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <Icon name="brands:apple" size={32} />
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>brands:apple</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <Icon name="brands:google" size={32} />
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>brands:google</div>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ marginTop: '2rem' }}>
+        <h2>Normalized Names</h2>
+        <p style={{ marginBottom: '1rem' }}>
+          All icon names are automatically normalized to kebab-case. For example:
+        </p>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
+          <div style={{ textAlign: 'center' }}>
+            <Icon name="sun-moon" size={32} />
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
+              sun-moon
+            </div>
+            <div style={{ fontSize: '0.6rem', color: '#666' }}>
+              (from sunMoon, SunMoon, sun_moon, etc.)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ marginTop: '2rem' }}>
         <h2>Sprite Information</h2>
         <p>The SVG sprite is served at <code>/icons</code></p>
         <p>View the sprite: <a href="/icons" target="_blank">/icons</a></p>
