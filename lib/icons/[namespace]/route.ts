@@ -41,7 +41,7 @@ export async function generateStaticParams() {
 }
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { namespace: string } }
 ) {
   try {
@@ -59,7 +59,7 @@ export async function GET(
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       return new NextResponse(
-        '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><!-- Namespace sprite not found --></svg>',
         {
           status: 404,
           headers: {

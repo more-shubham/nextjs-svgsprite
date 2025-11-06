@@ -26,7 +26,7 @@ export async function GET() {
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       return new NextResponse(
-        '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><!-- Sprite file not found --></svg>',
         {
           status: 404,
           headers: {

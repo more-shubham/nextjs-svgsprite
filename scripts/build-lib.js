@@ -24,7 +24,7 @@ try {
   process.exit(1);
 }
 
-// Step 2: Ensure lib directory exists
+// Ensure lib directory exists
 const libDir = path.join(process.cwd(), 'lib');
 if (!fs.existsSync(libDir)) {
   fs.mkdirSync(libDir, { recursive: true });
@@ -54,11 +54,33 @@ if (fs.existsSync(iconTypesPath)) {
 console.log('\n✅ Library build complete!');
 console.log(`Library files are in: ${libDir}`);
 console.log('\nContents:');
-console.log('  - Icon.tsx (Icon component)');
-console.log('  - icon-types.ts (TypeScript types)');
-console.log('  - icons-sprite.svg (default sprite)');
-spriteFiles
-  .filter(file => file !== 'icons-sprite.svg')
-  .forEach(file => console.log(`  - ${file}`));
-console.log('  - icons/route.ts (route handler for /icons)');
-console.log('  - icons/[namespace]/route.ts (route handler for namespace sprites)');
+
+// Dynamically list the actual files in lib directory
+const libFiles = fs.readdirSync(libDir, { withFileTypes: true });
+
+// List files with descriptions
+libFiles.forEach(entry => {
+  if (entry.isDirectory()) {
+    console.log(`  - ${entry.name}/ (directory)`);
+  } else if (entry.name === 'icon-types.ts') {
+    console.log('  - icon-types.ts (TypeScript types)');
+  } else if (entry.name === 'icons-sprite.svg') {
+    console.log('  - icons-sprite.svg (default sprite)');
+  } else if (entry.name === 'Icon.tsx') {
+    console.log('  - Icon.tsx (Icon component)');
+  } else if (entry.name.endsWith('.svg')) {
+    console.log(`  - ${entry.name}`);
+  } else {
+    console.log(`  - ${entry.name}`);
+  }
+});
+
+// List route handlers if icons directory exists
+const iconsDir = path.join(libDir, 'icons');
+if (fs.existsSync(iconsDir)) {
+  console.log('  - icons/route.ts (route handler for /icons)');
+  const namespaceDir = path.join(iconsDir, '[namespace]');
+  if (fs.existsSync(namespaceDir)) {
+    console.log('  - icons/[namespace]/route.ts (route handler for namespace sprites)');
+  }
+}
