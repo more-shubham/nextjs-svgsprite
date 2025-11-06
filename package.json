@@ -28,7 +28,11 @@
     "build:lib": "node scripts/build-lib.js",
     "prepublishOnly": "npm run build:lib",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
+    "test:e2e": "start-server-and-test start http://localhost:3000 cypress:headless",
+    "test:e2e:dev": "start-server-and-test dev http://localhost:3000 cypress"
   },
   "keywords": [
     "nextjs",
@@ -42,9 +46,11 @@
   "devDependencies": {
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
+    "cypress": "^15.6.0",
     "next": "^16.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "start-server-and-test": "^2.1.2",
     "svgstore": "^3.0.1",
     "typescript": "^5.9.3"
   },
