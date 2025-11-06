@@ -1,6 +1,6 @@
 /**
  * /icons/[namespace] Route Handler
- * 
+ *
  * This route serves namespace-specific SVG sprites at /icons/{namespace}
  * Examples: /icons/social, /icons/brands
  */
@@ -23,14 +23,16 @@ export async function generateStaticParams() {
       // Fallback for development
       libDir = path.join(__dirname, '../../');
     }
-    
+
     const files = fs.readdirSync(libDir);
-    
+
     // Find all sprite files with namespace pattern: icons-{namespace}.svg
     const namespaces = files
-      .filter(file => file.startsWith('icons-') && file.endsWith('.svg') && file !== 'icons-sprite.svg')
-      .map(file => ({
-        namespace: file.replace('icons-', '').replace('.svg', '')
+      .filter(
+        (file) => file.startsWith('icons-') && file.endsWith('.svg') && file !== 'icons-sprite.svg',
+      )
+      .map((file) => ({
+        namespace: file.replace('icons-', '').replace('.svg', ''),
       }));
 
     return namespaces;
@@ -40,13 +42,10 @@ export async function generateStaticParams() {
   }
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { namespace: string } }
-) {
+export async function GET(_request: Request, { params }: { params: { namespace: string } }) {
   try {
     const { namespace } = params;
-    
+
     // Serve the bundled namespace sprite from the package
     let spritePath: string;
     try {
@@ -55,7 +54,7 @@ export async function GET(
       // Fallback for development
       spritePath = path.join(__dirname, `../../icons-${namespace}.svg`);
     }
-    
+
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       return new NextResponse(
@@ -65,13 +64,13 @@ export async function GET(
           headers: {
             'Content-Type': 'image/svg+xml',
           },
-        }
+        },
       );
     }
 
     // Read and return the sprite file
     const spriteContent = fs.readFileSync(spritePath, 'utf8');
-    
+
     return new NextResponse(spriteContent, {
       status: 200,
       headers: {
@@ -88,7 +87,7 @@ export async function GET(
         headers: {
           'Content-Type': 'image/svg+xml',
         },
-      }
+      },
     );
   }
 }

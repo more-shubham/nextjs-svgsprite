@@ -15,11 +15,13 @@ npm install nextjs-svgsprite
 Copy the route handlers to your Next.js app to serve the bundled sprites:
 
 **app/icons/route.ts:**
+
 ```typescript
 export { GET, dynamic } from 'nextjs-svgsprite/icons/route';
 ```
 
 **app/icons/[namespace]/route.ts:**
+
 ```typescript
 export { GET, dynamic, generateStaticParams } from 'nextjs-svgsprite/icons/[namespace]/route';
 ```
@@ -49,6 +51,7 @@ export default function MyComponent() {
 The package includes the following pre-built icons:
 
 ### Default Icons
+
 - `home` - Home icon
 - `user` - User profile icon
 - `settings` - Settings/gear icon
@@ -57,49 +60,48 @@ The package includes the following pre-built icons:
 - `sun-moon` - Theme toggle icon
 
 ### Social Icons (namespace: social)
+
 - `social:facebook` - Facebook logo
 - `social:twitter` - Twitter logo
 
 ### Brand Icons (namespace: brands)
+
 - `brands:apple` - Apple logo
 - `brands:google` - Google logo
 
 ## Usage Examples
 
 ### Basic Icon
+
 ```tsx
 <Icon name="home" size={24} />
 ```
 
 ### Icon with Color
+
 ```tsx
 <Icon name="star" size={32} color="#fbbf24" />
 ```
 
 ### Icon with Custom Styling
+
 ```tsx
-<Icon 
-  name="user" 
-  size={24} 
-  className="text-blue-500 hover:text-blue-700"
-/>
+<Icon name="user" size={24} className="text-blue-500 hover:text-blue-700" />
 ```
 
 ### Namespaced Icons
+
 ```tsx
 <Icon name="social:facebook" size={24} />
 <Icon name="brands:apple" size={32} />
 ```
 
 ### Accessible Icon with Label
+
 ```tsx
 import { IconWithLabel } from 'nextjs-svgsprite/Icon';
 
-<IconWithLabel 
-  name="search" 
-  label="Search the site"
-  size={24}
-/>
+<IconWithLabel name="search" label="Search the site" size={24} />;
 ```
 
 ## TypeScript Support
@@ -124,21 +126,21 @@ console.log(iconNames); // ['home', 'user', 'settings', ...]
 
 ### Icon Component
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `IconName` | required | Name of the icon to display |
-| `size` | `number` | `24` | Size of the icon in pixels |
-| `color` | `string` | `"currentColor"` | Color of the icon |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `CSSProperties` | `{}` | Inline styles |
+| Prop        | Type            | Default          | Description                 |
+| ----------- | --------------- | ---------------- | --------------------------- |
+| `name`      | `IconName`      | required         | Name of the icon to display |
+| `size`      | `number`        | `24`             | Size of the icon in pixels  |
+| `color`     | `string`        | `"currentColor"` | Color of the icon           |
+| `className` | `string`        | `""`             | Additional CSS classes      |
+| `style`     | `CSSProperties` | `{}`             | Inline styles               |
 
 ### IconWithLabel Component
 
 Same as Icon, plus:
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | `name` | Accessible label for screen readers |
+| Prop    | Type     | Default | Description                         |
+| ------- | -------- | ------- | ----------------------------------- |
+| `label` | `string` | `name`  | Accessible label for screen readers |
 
 ## Advanced Usage
 
@@ -147,9 +149,9 @@ Same as Icon, plus:
 ```tsx
 const icons = ['home', 'user', 'settings'] as const;
 
-{icons.map(iconName => (
-  <Icon key={iconName} name={iconName} size={24} />
-))}
+{
+  icons.map((iconName) => <Icon key={iconName} name={iconName} size={24} />);
+}
 ```
 
 ### Custom Styling with CSS
@@ -172,13 +174,13 @@ const icons = ['home', 'user', 'settings'] as const;
 ### Inline Styles
 
 ```tsx
-<Icon 
-  name="user" 
-  size={24} 
-  style={{ 
+<Icon
+  name="user"
+  size={24}
+  style={{
     marginRight: '8px',
-    verticalAlign: 'middle'
-  }} 
+    verticalAlign: 'middle',
+  }}
 />
 ```
 

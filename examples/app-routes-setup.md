@@ -29,6 +29,7 @@ This handles namespaced icons like `social:facebook` and `brands:apple`.
 ## That's It!
 
 With these two route files, your application will:
+
 - Serve the default sprite at `/icons`
 - Serve namespace sprites at `/icons/social`, `/icons/brands`, etc.
 - Use static generation for optimal performance
@@ -96,7 +97,7 @@ export async function GET() {
     // Serve from node_modules where the package is installed
     const spritePath = require.resolve('nextjs-svgsprite/lib/icons-sprite.svg');
     const spriteContent = fs.readFileSync(spritePath, 'utf8');
-    
+
     return new NextResponse(spriteContent, {
       status: 200,
       headers: {
@@ -113,7 +114,7 @@ export async function GET() {
         headers: {
           'Content-Type': 'image/svg+xml',
         },
-      }
+      },
     );
   }
 }

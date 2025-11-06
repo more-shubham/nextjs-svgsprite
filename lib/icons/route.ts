@@ -1,6 +1,6 @@
 /**
  * /icons Route Handler
- * 
+ *
  * This route serves the bundled SVG sprite at /icons
  * The sprite is pre-built and included with the package
  */
@@ -22,7 +22,7 @@ export async function GET() {
       // Fallback for development or when resolving from within the package
       spritePath = path.join(__dirname, '../icons-sprite.svg');
     }
-    
+
     // Check if sprite file exists
     if (!fs.existsSync(spritePath)) {
       return new NextResponse(
@@ -32,13 +32,13 @@ export async function GET() {
           headers: {
             'Content-Type': 'image/svg+xml',
           },
-        }
+        },
       );
     }
 
     // Read and return the sprite file
     const spriteContent = fs.readFileSync(spritePath, 'utf8');
-    
+
     return new NextResponse(spriteContent, {
       status: 200,
       headers: {
@@ -55,7 +55,7 @@ export async function GET() {
         headers: {
           'Content-Type': 'image/svg+xml',
         },
-      }
+      },
     );
   }
 }

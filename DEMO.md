@@ -23,6 +23,7 @@ When you type `<Icon name="`, your IDE will show you all available options:
 ```
 
 Your IDE will display:
+
 - ✅ `home`
 - ✅ `search`
 - ✅ `settings`
@@ -55,6 +56,7 @@ Here's what the autocomplete looks like in popular IDEs:
 ### VS Code
 
 When typing `<Icon name="`:
+
 ```
 ┌─────────────────────────────┐
 │ Suggestions:                │
@@ -70,9 +72,10 @@ When typing `<Icon name="`:
 ### Error Highlighting
 
 When using an invalid name:
+
 ```tsx
 <Icon name="wrong" size={24} />
-           ~~~~~~~ 
+           ~~~~~~~
 Type '"wrong"' is not assignable to type 'IconName'
 ```
 
@@ -82,7 +85,7 @@ Type '"wrong"' is not assignable to type 'IconName'
 ✅ **Instant feedback** - See available icons as you type  
 ✅ **Self-documenting** - Types serve as inline documentation  
 ✅ **Refactoring support** - Rename icons safely across your codebase  
-✅ **Always in sync** - Types update automatically when icons change  
+✅ **Always in sync** - Types update automatically when icons change
 
 ## Try It Yourself
 

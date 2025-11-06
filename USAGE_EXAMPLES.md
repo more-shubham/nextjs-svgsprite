@@ -37,11 +37,7 @@ export default function MyPage() {
 ### Icon with CSS Classes
 
 ```jsx
-<Icon 
-  name="home" 
-  size={24} 
-  className="text-blue-500 hover:text-blue-700 transition-colors" 
-/>
+<Icon name="home" size={24} className="text-blue-500 hover:text-blue-700 transition-colors" />
 ```
 
 ## Component Examples
@@ -60,12 +56,8 @@ export default function Navigation() {
 
   return (
     <nav className="flex gap-6">
-      {navItems.map(item => (
-        <a 
-          key={item.name}
-          href={item.href}
-          className="flex items-center gap-2 hover:text-blue-500"
-        >
+      {navItems.map((item) => (
+        <a key={item.name} href={item.href} className="flex items-center gap-2 hover:text-blue-500">
           <Icon name={item.name} size={20} />
           <span>{item.label}</span>
         </a>
@@ -124,11 +116,11 @@ export function FeatureCard({ icon, title, description }) {
 }
 
 // Usage
-<FeatureCard 
-  icon="home" 
-  title="Easy Setup" 
-  description="Get started in minutes with zero configuration" 
-/>
+<FeatureCard
+  icon="home"
+  title="Easy Setup"
+  description="Get started in minutes with zero configuration"
+/>;
 ```
 
 ### Icon List
@@ -150,11 +142,13 @@ export function IconList({ items }) {
 }
 
 // Usage
-<IconList items={[
-  { icon: 'home', text: 'Built-in routing' },
-  { icon: 'user', text: 'User authentication' },
-  { icon: 'settings', text: 'Customizable settings' },
-]} />
+<IconList
+  items={[
+    { icon: 'home', text: 'Built-in routing' },
+    { icon: 'user', text: 'User authentication' },
+    { icon: 'settings', text: 'Customizable settings' },
+  ]}
+/>;
 ```
 
 ## Styling Examples
@@ -193,17 +187,17 @@ import styles from './styles.module.css';
 import Icon from '@/components/Icon';
 
 // Hover effects
-<Icon 
-  name="home" 
-  size={24} 
-  className="text-gray-600 hover:text-blue-500 transition-colors duration-200" 
+<Icon
+  name="home"
+  size={24}
+  className="text-gray-600 hover:text-blue-500 transition-colors duration-200"
 />
 
 // Animated icon
-<Icon 
-  name="settings" 
-  size={24} 
-  className="text-gray-600 hover:rotate-180 transition-transform duration-500" 
+<Icon
+  name="settings"
+  size={24}
+  className="text-gray-600 hover:rotate-180 transition-transform duration-500"
 />
 
 // Icon with background
@@ -212,25 +206,25 @@ import Icon from '@/components/Icon';
 </div>
 
 // Responsive sizes
-<Icon 
-  name="home" 
-  size={24} 
-  className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" 
+<Icon
+  name="home"
+  size={24}
+  className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10"
 />
 ```
 
 ### Inline Styles
 
 ```jsx
-<Icon 
-  name="home" 
-  size={24} 
+<Icon
+  name="home"
+  size={24}
   style={{
     color: '#3b82f6',
     marginRight: '8px',
     verticalAlign: 'middle',
     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-  }} 
+  }}
 />
 ```
 
@@ -269,7 +263,7 @@ export function IconWithBadge({ icon, badge, size = 24 }) {
 }
 
 // Usage
-<IconWithBadge icon="user" badge="3" />
+<IconWithBadge icon="user" badge="3" />;
 ```
 
 ### Icon Toggle Button
@@ -288,17 +282,13 @@ export function IconToggle({ onIcon, offIcon, defaultOn = false }) {
       onClick={() => setIsOn(!isOn)}
       className="p-2 rounded hover:bg-gray-100 transition-colors"
     >
-      <Icon 
-        name={isOn ? onIcon : offIcon} 
-        size={24}
-        color={isOn ? '#3b82f6' : '#6b7280'}
-      />
+      <Icon name={isOn ? onIcon : offIcon} size={24} color={isOn ? '#3b82f6' : '#6b7280'} />
     </button>
   );
 }
 
 // Usage
-<IconToggle onIcon="home" offIcon="user" />
+<IconToggle onIcon="home" offIcon="user" />;
 ```
 
 ### Conditional Icon Rendering
@@ -332,8 +322,8 @@ import Icon from '@/components/Icon';
 export function IconGrid({ icons, size = 32 }) {
   return (
     <div className="grid grid-cols-4 gap-4">
-      {icons.map(iconName => (
-        <div 
+      {icons.map((iconName) => (
+        <div
           key={iconName}
           className="flex flex-col items-center gap-2 p-4 border rounded hover:bg-gray-50 cursor-pointer"
         >
@@ -346,7 +336,7 @@ export function IconGrid({ icons, size = 32 }) {
 }
 
 // Usage
-<IconGrid icons={['home', 'user', 'settings', 'search']} />
+<IconGrid icons={['home', 'user', 'settings', 'search']} />;
 ```
 
 ## Real-World Scenarios
@@ -418,11 +408,13 @@ export function ActionMenu({ actions }) {
 }
 
 // Usage
-<ActionMenu actions={[
-  { icon: 'home', label: 'Home', onClick: () => {} },
-  { icon: 'user', label: 'Profile', onClick: () => {} },
-  { icon: 'settings', label: 'Settings', onClick: () => {} },
-]} />
+<ActionMenu
+  actions={[
+    { icon: 'home', label: 'Home', onClick: () => {} },
+    { icon: 'user', label: 'Profile', onClick: () => {} },
+    { icon: 'settings', label: 'Settings', onClick: () => {} },
+  ]}
+/>;
 ```
 
 ### Breadcrumb Navigation
@@ -435,14 +427,12 @@ export function Breadcrumb({ items }) {
     <nav className="flex items-center gap-2 text-sm">
       {items.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
-          {index > 0 && (
-            <Icon name="arrow-right" size={16} color="#9ca3af" />
-          )}
-          <a 
+          {index > 0 && <Icon name="arrow-right" size={16} color="#9ca3af" />}
+          <a
             href={item.href}
             className={`flex items-center gap-1 ${
-              index === items.length - 1 
-                ? 'text-gray-900 font-medium' 
+              index === items.length - 1
+                ? 'text-gray-900 font-medium'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -495,10 +485,7 @@ export function SettingsPanel({ settings }) {
   return (
     <div className="bg-white rounded-lg shadow">
       {settings.map((section, index) => (
-        <div 
-          key={index}
-          className="border-b last:border-b-0"
-        >
+        <div key={index} className="border-b last:border-b-0">
           <div className="flex items-center gap-3 p-4">
             <div className="p-2 bg-gray-100 rounded">
               <Icon name={section.icon} size={20} />
@@ -521,6 +508,7 @@ export function SettingsPanel({ settings }) {
 ### 1. Icon Naming Convention
 
 Keep icon names consistent and descriptive:
+
 - Use kebab-case: `arrow-right.svg`, `user-profile.svg`
 - Be specific: `home.svg` instead of `icon1.svg`
 - Group related icons: `social-facebook.svg`, `social-twitter.svg`
@@ -555,28 +543,25 @@ import { IconWithLabel } from '@/components/Icon';
 
 ```jsx
 // Use Tailwind responsive classes
-<Icon 
-  name="home" 
-  className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8"
-/>
+<Icon name="home" className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8" />;
 
 // Or use size prop with responsive breakpoints
 const size = useMediaQuery('(min-width: 768px)') ? 32 : 24;
-<Icon name="home" size={size} />
+<Icon name="home" size={size} />;
 ```
 
 ### 5. Dark Mode Support
 
 ```jsx
-<Icon 
-  name="home" 
+<Icon
+  name="home"
   size={24}
   className="text-gray-900 dark:text-gray-100"
 />
 
 // With custom colors
-<Icon 
-  name="user" 
+<Icon
+  name="user"
   size={24}
   color={isDarkMode ? '#f3f4f6' : '#111827'}
 />

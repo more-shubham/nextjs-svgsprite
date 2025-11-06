@@ -7,6 +7,7 @@ Transform the `nextjs-svgsprite` package from a plugin/scaffold approach to a re
 ## Problem Statement
 
 The requirement was to:
+
 1. Export Icon component directly from the package
 2. Include icon names/types with the Icon component
 3. Bundle icons from this repository (not require users to provide their own)
@@ -32,6 +33,7 @@ lib/
 ### 2. Pre-built Icons Included
 
 **Default Icons (6):**
+
 - home
 - user
 - settings
@@ -40,10 +42,12 @@ lib/
 - sun-moon
 
 **Social Icons (2):**
+
 - social:facebook
 - social:twitter
 
 **Brand Icons (2):**
+
 - brands:apple
 - brands:google
 
@@ -84,6 +88,7 @@ Updated `package.json` with:
 ### 4. Build System
 
 Created `scripts/build-lib.js` that:
+
 1. Builds SVG sprites from svg-icons/
 2. Generates TypeScript type definitions
 3. Copies sprites to lib/ directory
@@ -94,6 +99,7 @@ The `prepublishOnly` hook ensures sprites are always up-to-date before npm publi
 ### 5. Route Handlers
 
 Implemented smart route handlers that:
+
 - Use `require.resolve()` to locate sprites in node_modules
 - Fallback to development paths when needed
 - Return proper HTTP status codes (404 for missing sprites)
@@ -118,11 +124,13 @@ Implemented smart route handlers that:
 ## Usage Example
 
 ### Installation
+
 ```bash
 npm install nextjs-svgsprite
 ```
 
 ### Setup Routes
+
 ```typescript
 // app/icons/route.ts
 export { GET, dynamic } from 'nextjs-svgsprite/icons/route';
@@ -132,6 +140,7 @@ export { GET, dynamic, generateStaticParams } from 'nextjs-svgsprite/icons/[name
 ```
 
 ### Use Icon Component
+
 ```tsx
 import Icon from 'nextjs-svgsprite/Icon';
 
@@ -149,17 +158,20 @@ export default function MyComponent() {
 ## Quality Assurance
 
 ### Security
+
 - ✅ No vulnerabilities in dependencies (gh-advisory-database)
 - ✅ CodeQL analysis passed with 0 alerts
 - ✅ Proper error handling in route handlers
 
 ### Code Review
+
 - ✅ Extracted utility function to reduce duplication
 - ✅ Fixed HTTP status codes (404 for missing resources)
 - ✅ Corrected step numbering in build output
 - ✅ All feedback addressed
 
 ### Testing
+
 - ✅ Verified all package exports resolve correctly
 - ✅ Verified library builds successfully
 - ✅ Verified route handlers work with require.resolve fallback
@@ -180,7 +192,7 @@ export default function MyComponent() {
 1. **package.json** - Updated exports, files, scripts
 2. **lib/Icon.tsx** - New Icon component for library
 3. **lib/icon-types.ts** - Generated TypeScript types
-4. **lib/icons/*.svg** - Pre-built sprite files
+4. **lib/icons/\*.svg** - Pre-built sprite files
 5. **lib/icons/route.ts** - Default icons route handler
 6. **lib/icons/[namespace]/route.ts** - Namespace route handler
 7. **scripts/build-lib.js** - Library build script
@@ -198,6 +210,7 @@ export default function MyComponent() {
 ## Result
 
 The package now successfully exports a ready-to-use Icon component with:
+
 - 10 pre-built icons
 - Full TypeScript support
 - Simple 2-file setup

@@ -4,7 +4,7 @@ export default function HomePage() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
       <h1>Next.js SVG Sprite Plugin Example</h1>
-      
+
       <section style={{ marginTop: '2rem' }}>
         <h2>Basic Icons</h2>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
@@ -15,16 +15,17 @@ export default function HomePage() {
           <Icon name="star" size={24} />
         </div>
       </section>
-      
+
       <section style={{ marginTop: '2rem' }}>
         <h2>TypeScript Autocomplete</h2>
         <p>
-          When using TypeScript, your IDE will suggest icon names: 
-          <code>home</code>, <code>user</code>, <code>settings</code>, 
-          <code>search</code>, <code>star</code>
+          When using TypeScript, your IDE will suggest icon names:
+          <code>home</code>, <code>user</code>, <code>settings</code>,<code>search</code>,{' '}
+          <code>star</code>
         </p>
         <p style={{ marginTop: '0.5rem', color: '#666' }}>
-          Try typing <code>&lt;Icon name="</code> in a TypeScript file to see the autocomplete in action!
+          Try typing <code>&lt;Icon name="</code> in a TypeScript file to see the autocomplete in
+          action!
         </p>
       </section>
 
@@ -93,9 +94,7 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
           <div style={{ textAlign: 'center' }}>
             <Icon name="sun-moon" size={32} />
-            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
-              sun-moon
-            </div>
+            <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>sun-moon</div>
             <div style={{ fontSize: '0.6rem', color: '#666' }}>
               (from sunMoon, SunMoon, sun_moon, etc.)
             </div>
@@ -105,8 +104,15 @@ export default function HomePage() {
 
       <section style={{ marginTop: '2rem' }}>
         <h2>Sprite Information</h2>
-        <p>The SVG sprite is served at <code>/icons</code></p>
-        <p>View the sprite: <a href="/icons" target="_blank">/icons</a></p>
+        <p>
+          The SVG sprite is served at <code>/icons</code>
+        </p>
+        <p>
+          View the sprite:{' '}
+          <a href="/icons" target="_blank">
+            /icons
+          </a>
+        </p>
       </section>
     </div>
   );

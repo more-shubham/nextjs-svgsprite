@@ -16,7 +16,6 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 - 📁 **Namespace Support** - Separate sprite files per folder (e.g., `social/` → `icons-social.svg`)
 - 🔍 **Duplicate Detection** - Shows build-time errors when multiple files normalize to the same name
 - ⚡ **Performance Optimized** - Each namespace loads only its own icons
-- ✅ **Fully Tested** - Comprehensive Cypress E2E tests for all components and routes
 
 ## Quick Start
 
@@ -54,6 +53,7 @@ svg-icons/
 ```
 
 This creates:
+
 - Namespaced icons: `social:facebook`, `social:twitter`, `brands:apple`, `brands:google`
 - Separate sprite files: `icons-social.svg`, `icons-brands.svg`
 - Root level icons in: `icons-sprite.svg` (default namespace)
@@ -65,6 +65,7 @@ npm run build:sprite
 ```
 
 This generates separate sprite files in `public/`:
+
 - `public/icons-sprite.svg` - Default/root level icons
 - `public/icons-social.svg` - Social namespace icons
 - `public/icons-brands.svg` - Brands namespace icons
@@ -72,6 +73,7 @@ This generates separate sprite files in `public/`:
 ### 4. Use the Icon Component
 
 **JavaScript:**
+
 ```jsx
 import Icon from '@/components/Icon';
 
@@ -87,6 +89,7 @@ export default function MyComponent() {
 ```
 
 **TypeScript (with autocomplete!):**
+
 ```tsx
 import Icon from '@/components/Icon';
 
@@ -157,8 +160,8 @@ const nextConfig = {
 };
 
 module.exports = withSvgSprite({
-  svgDir: 'svg-icons',              // Directory with SVG files
-  outputPath: 'public/icons-sprite.svg',  // Output path for sprite
+  svgDir: 'svg-icons', // Directory with SVG files
+  outputPath: 'public/icons-sprite.svg', // Output path for sprite
 })(nextConfig);
 ```
 
@@ -167,12 +170,12 @@ module.exports = withSvgSprite({
 ### Basic Icon
 
 ```jsx
-<Icon 
-  name="home"           // Required: icon name (without .svg extension)
-  size={24}             // Optional: icon size in pixels (default: 24)
-  color="currentColor"  // Optional: icon color (default: currentColor)
-  className=""          // Optional: CSS classes
-  style={{}}            // Optional: inline styles
+<Icon
+  name="home" // Required: icon name (without .svg extension)
+  size={24} // Optional: icon size in pixels (default: 24)
+  color="currentColor" // Optional: icon color (default: currentColor)
+  className="" // Optional: CSS classes
+  style={{}} // Optional: inline styles
 />
 ```
 
@@ -181,32 +184,37 @@ module.exports = withSvgSprite({
 ```jsx
 import { IconWithLabel } from '@/components/Icon';
 
-<IconWithLabel 
+<IconWithLabel
   name="home"
-  label="Home page"     // Accessible label for screen readers
+  label="Home page" // Accessible label for screen readers
   size={24}
-/>
+/>;
 ```
 
 ## Build Scripts
 
 ### `npm run dev`
+
 Starts the development server with hot reload. The sprite is regenerated automatically when SVG files change.
 
 ### `npm run build:sprite`
+
 Manually generates the SVG sprite from all files in `svg-icons/`.
 
 ### `npm run build`
+
 Builds the sprite and then builds the Next.js application for production.
 
 ### `npm start`
+
 Starts the production server.
 
 ## TypeScript Support
 
-This package provides full TypeScript support with **type-safe icon names** and **autocomplete suggestions**! 
+This package provides full TypeScript support with **type-safe icon names** and **autocomplete suggestions**!
 
 When you run `npm run build:sprite`, the script automatically:
+
 1. ✅ Generates TypeScript type definitions from your SVG files
 2. ✅ Creates a union type of all available icon names
 3. ✅ Enables IDE autocomplete for icon names
@@ -221,10 +229,10 @@ export default function MyComponent() {
     <>
       {/* ✅ Valid - TypeScript knows "home" exists */}
       <Icon name="home" size={24} />
-      
+
       {/* ❌ TypeScript error - "invalid" icon doesn't exist */}
       <Icon name="invalid" size={24} />
-      
+
       {/* 💡 Your IDE will suggest: "home" | "user" | "settings" | "search" */}
       <Icon name="" size={24} />
     </>
@@ -251,6 +259,7 @@ export const iconNames = ['home', 'search', 'settings', 'user'] as const;
 ### Full TypeScript Documentation
 
 For complete TypeScript documentation, including:
+
 - Advanced type usage
 - Migration from JavaScript
 - IDE setup and configuration
@@ -264,23 +273,25 @@ All icon names are automatically normalized to **kebab-case** format. This means
 
 ### Supported Naming Patterns
 
-| Original Filename | Normalized Name |
-|-------------------|-----------------|
-| `sunMoon.svg` | `sun-moon` |
-| `SunMoon.svg` | `sun-moon` |
-| `sun_moon.svg` | `sun-moon` |
-| `sun moon.svg` | `sun-moon` |
-| `sun-moon.svg` | `sun-moon` |
-| `sun  moon.svg` | `sun-moon` (multiple spaces) |
+| Original Filename | Normalized Name              |
+| ----------------- | ---------------------------- |
+| `sunMoon.svg`     | `sun-moon`                   |
+| `SunMoon.svg`     | `sun-moon`                   |
+| `sun_moon.svg`    | `sun-moon`                   |
+| `sun moon.svg`    | `sun-moon`                   |
+| `sun-moon.svg`    | `sun-moon`                   |
+| `sun  moon.svg`   | `sun-moon` (multiple spaces) |
 
 ### Duplicate Detection
 
 If multiple files normalize to the same name, the plugin will:
+
 1. ⚠️ Show a warning listing all duplicate files
 2. Keep only the first occurrence
 3. Remove the duplicates from the final sprite
 
 Example warning:
+
 ```
 ⚠️  Warning: Duplicate icon names detected after normalization:
    "sun-moon" found in: [SunMoon, sun-moon, sunMoon, sun_moon]
@@ -292,6 +303,7 @@ Example warning:
 Organize icons using folders. The folder structure becomes the namespace:
 
 **Simple Namespace:**
+
 ```
 svg-icons/
   └── social/
@@ -300,6 +312,7 @@ svg-icons/
 ```
 
 **Nested Namespace:**
+
 ```
 svg-icons/
   └── sidebar/
@@ -308,6 +321,7 @@ svg-icons/
 ```
 
 **Using Namespaced Icons:**
+
 ```tsx
 <Icon name="social:facebook" size={24} />
 <Icon name="sidebar:nav-items:user-menu" size={24} />
@@ -320,6 +334,7 @@ svg-icons/
 ### 1. Sprite Generation (Per Namespace)
 
 The `scripts/build-sprite.js` script:
+
 - Reads all `.svg` files from the `svg-icons/` directory (including subdirectories)
 - Normalizes all file and folder names to kebab-case
 - Groups icons by namespace based on folder structure
@@ -331,6 +346,7 @@ The `scripts/build-sprite.js` script:
 - Shows build errors when duplicate normalized names are detected
 
 **Example Build Output:**
+
 ```
 📦 Building sprite for namespace: brands
   ✓ brands:apple (from brands/apple)
@@ -346,10 +362,12 @@ The `scripts/build-sprite.js` script:
 ### 2. Static Routes for Sprites
 
 **Default Route** (`app/icons/route.ts`):
+
 - Serves the default sprite at `/icons`
 - Static generation with `force-static`
 
 **Namespace Routes** (`app/icons/[namespace]/route.ts`):
+
 - Serves namespace sprites at `/icons/{namespace}`
 - Static generation with `generateStaticParams()`
 - Examples: `/icons/social`, `/icons/brands`
@@ -358,6 +376,7 @@ The `scripts/build-sprite.js` script:
 ### 3. Smart Icon Component
 
 The `Icon` component automatically:
+
 - Detects namespace from icon name (e.g., `social:facebook`)
 - Loads from the correct sprite file:
   - `<Icon name="home" />` → loads from `/icons#home`
@@ -366,6 +385,7 @@ The `Icon` component automatically:
 - Provides props for easy customization (size, color, className)
 
 **Performance Benefits:**
+
 - Each page only loads the sprite files it needs
 - Namespaced icons don't pollute the default sprite
 - Better code splitting and faster page loads
@@ -375,6 +395,7 @@ The `Icon` component automatically:
 ### Step 1: Copy Files
 
 Copy these files to your project:
+
 - `nextjs-svgsprite.js` - Plugin
 - `scripts/build-sprite.js` - Build script
 - `app/icons/route.js` - Route handler
@@ -447,21 +468,21 @@ Icons inherit the current text color by default. You can style them with CSS:
 ```jsx
 const icons = ['home', 'user', 'settings'];
 
-{icons.map(iconName => (
-  <Icon key={iconName} name={iconName} size={24} />
-))}
+{
+  icons.map((iconName) => <Icon key={iconName} name={iconName} size={24} />);
+}
 ```
 
 ### Inline Styles
 
 ```jsx
-<Icon 
-  name="home" 
-  size={24} 
-  style={{ 
+<Icon
+  name="home"
+  size={24}
+  style={{
     marginRight: '8px',
-    verticalAlign: 'middle'
-  }} 
+    verticalAlign: 'middle',
+  }}
 />
 ```
 
@@ -509,36 +530,10 @@ Before deploying:
 2. Commit the sprite to git if needed (or regenerate during build)
 3. The `/icons` route will serve the sprite with proper caching headers
 
-## Testing
-
-This project includes comprehensive end-to-end testing with Cypress.
-
-### Run Tests
-
-```bash
-# Interactive mode (opens Cypress UI)
-npm run test:e2e:dev
-
-# Headless mode (for CI/CD)
-npm run build
-npm run test:e2e
-```
-
-### Test Coverage
-
-- ✅ Icon component (basic rendering, sizes, colors)
-- ✅ IconWithLabel component (accessibility)
-- ✅ Namespaced icons (social:, brands:)
-- ✅ Server routes (/icons, /icons/social, /icons/brands)
-- ✅ Icon name normalization
-- ✅ Next.js 16 & React 19 integration
-- ✅ TypeScript & JavaScript compatibility
-
-For detailed testing documentation, see [TESTING.md](./TESTING.md).
-
 ## Browser Support
 
 Works in all modern browsers that support:
+
 - SVG `<use>` element
 - ES6+ JavaScript (via Next.js transpilation)
 

@@ -13,6 +13,7 @@ The package has been enhanced to export a complete icon library that can be dire
 The package includes 10 pre-built icons organized into namespaces:
 
 **Default Icons:**
+
 - `home` - Home icon
 - `user` - User profile icon
 - `settings` - Settings/gear icon
@@ -21,10 +22,12 @@ The package includes 10 pre-built icons organized into namespaces:
 - `sun-moon` - Theme toggle icon
 
 **Social Icons (namespace: social):**
+
 - `social:facebook` - Facebook logo
 - `social:twitter` - Twitter logo
 
 **Brand Icons (namespace: brands):**
+
 - `brands:apple` - Apple logo
 - `brands:google` - Google logo
 
@@ -63,11 +66,13 @@ npm install nextjs-svgsprite
 Create two route files in your Next.js app:
 
 **app/icons/route.ts:**
+
 ```typescript
 export { GET, dynamic } from 'nextjs-svgsprite/icons/route';
 ```
 
 **app/icons/[namespace]/route.ts:**
+
 ```typescript
 export { GET, dynamic, generateStaticParams } from 'nextjs-svgsprite/icons/[namespace]/route';
 ```
@@ -145,6 +150,7 @@ try {
 ```
 
 This ensures sprites are found whether the package is:
+
 - Installed via npm in node_modules
 - Used during development
 - Linked via npm link
@@ -158,11 +164,11 @@ import Icon, { IconName, iconNames } from 'nextjs-svgsprite/Icon';
 
 // Type-safe icon names
 const iconName: IconName = 'home'; // ✅ Valid
-const invalid: IconName = 'nope';  // ❌ Type error
+const invalid: IconName = 'nope'; // ❌ Type error
 
 // All available icons
-console.log(iconNames); 
-// ['home', 'user', 'settings', 'search', 'star', 'sun-moon', 
+console.log(iconNames);
+// ['home', 'user', 'settings', 'search', 'star', 'sun-moon',
 //  'social:facebook', 'social:twitter', 'brands:apple', 'brands:google']
 ```
 
@@ -184,6 +190,7 @@ The `files` array in package.json specifies what gets published:
 ```
 
 This ensures:
+
 - All lib files (sprites, Icon component, routes)
 - Build scripts for custom sprite generation
 - Original components for reference
@@ -205,12 +212,14 @@ This ensures:
 ## Benefits Over Previous Approach
 
 **Before:**
+
 - Users had to manage their own SVG files
 - Required sprite generation setup
 - Need to run build scripts
 - Configure routes manually
 
 **After:**
+
 - Icons included in package
 - No build step needed for users
 - Simple route re-export
@@ -219,11 +228,13 @@ This ensures:
 ## Backwards Compatibility
 
 The package still includes:
+
 - `nextjs-svgsprite.js` plugin for custom sprite generation
 - Original components for local development
 - Build scripts for adding custom icons
 
 This allows both use cases:
+
 1. **Library Mode** - Use pre-built icons (new feature)
 2. **Plugin Mode** - Generate sprites from custom SVGs (original feature)
 
