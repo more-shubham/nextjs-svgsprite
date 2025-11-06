@@ -10,6 +10,8 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 - 🔄 **Hot Reload Support** - Regenerates sprite during development
 - 📦 **Zero Configuration** - Works out of the box with sensible defaults
 - ♿ **Accessible** - Includes `IconWithLabel` component for accessibility
+- 🔷 **TypeScript Support** - Full type safety with autocomplete for icon names
+- 💡 **IntelliSense** - Get icon name suggestions as you type
 
 ## Quick Start
 
@@ -41,6 +43,7 @@ This generates `public/icons-sprite.svg` from all SVG files in `svg-icons/`.
 
 ### 4. Use the Icon Component
 
+**JavaScript:**
 ```jsx
 import Icon from '@/components/Icon';
 
@@ -55,17 +58,36 @@ export default function MyComponent() {
 }
 ```
 
+**TypeScript (with autocomplete!):**
+```tsx
+import Icon from '@/components/Icon';
+
+export default function MyComponent() {
+  return (
+    <div>
+      {/* Your IDE will autocomplete icon names: home, user, settings, search */}
+      <Icon name="home" size={24} />
+      <Icon name="user" size={32} color="blue" />
+      <Icon name="settings" size={24} className="my-icon" />
+    </div>
+  );
+}
+```
+
+> 📘 **TypeScript Users**: See [TYPESCRIPT.md](./TYPESCRIPT.md) for complete TypeScript documentation including type-safe icon names and autocomplete features.
+
 ## Folder Structure
 
 ```
 nextjs-svgsprite/
 ├── app/
 │   ├── icons/
-│   │   └── route.js           # Route handler for /icons endpoint
-│   ├── layout.jsx             # Root layout
-│   └── page.jsx               # Example page
+│   │   └── route.ts           # Route handler for /icons endpoint
+│   ├── layout.tsx             # Root layout
+│   └── page.tsx               # Example page
 ├── components/
-│   └── Icon.jsx               # Reusable Icon component
+│   ├── Icon.tsx               # Reusable Icon component (TypeScript)
+│   └── icon-types.ts          # Auto-generated icon types
 ├── scripts/
 │   └── build-sprite.js        # Sprite generation script
 ├── svg-icons/                 # Place your SVG files here
@@ -77,6 +99,7 @@ nextjs-svgsprite/
 │   └── icons-sprite.svg       # Generated sprite (gitignored)
 ├── next.config.js             # Next.js config with plugin
 ├── nextjs-svgsprite.js        # Plugin implementation
+├── tsconfig.json              # TypeScript configuration
 └── package.json
 ```
 
@@ -150,6 +173,62 @@ Builds the sprite and then builds the Next.js application for production.
 
 ### `npm start`
 Starts the production server.
+
+## TypeScript Support
+
+This package provides full TypeScript support with **type-safe icon names** and **autocomplete suggestions**! 
+
+When you run `npm run build:sprite`, the script automatically:
+1. ✅ Generates TypeScript type definitions from your SVG files
+2. ✅ Creates a union type of all available icon names
+3. ✅ Enables IDE autocomplete for icon names
+
+### Example with TypeScript
+
+```tsx
+import Icon from '@/components/Icon';
+
+export default function MyComponent() {
+  return (
+    <>
+      {/* ✅ Valid - TypeScript knows "home" exists */}
+      <Icon name="home" size={24} />
+      
+      {/* ❌ TypeScript error - "invalid" icon doesn't exist */}
+      <Icon name="invalid" size={24} />
+      
+      {/* 💡 Your IDE will suggest: "home" | "user" | "settings" | "search" */}
+      <Icon name="" size={24} />
+    </>
+  );
+}
+```
+
+### Auto-Generated Types
+
+The build script creates `components/icon-types.ts`:
+
+```typescript
+export type IconName = 'home' | 'search' | 'settings' | 'user';
+export const iconNames = ['home', 'search', 'settings', 'user'] as const;
+```
+
+### Benefits
+
+- 🔷 **Type Safety**: Catch invalid icon names at compile time
+- 💡 **Autocomplete**: Your IDE suggests available icon names as you type
+- 📝 **Self-Documenting**: Types serve as inline documentation
+- 🔄 **Always in Sync**: Types update automatically when you add/remove icons
+
+### Full TypeScript Documentation
+
+For complete TypeScript documentation, including:
+- Advanced type usage
+- Migration from JavaScript
+- IDE setup and configuration
+- Troubleshooting
+
+See **[TYPESCRIPT.md](./TYPESCRIPT.md)**
 
 ## How It Works
 

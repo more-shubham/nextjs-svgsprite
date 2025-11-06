@@ -1,4 +1,4 @@
-import Icon, { IconWithLabel } from '../components/Icon';
+import Icon, { IconWithLabel } from '@/components/Icon';
 
 export default function HomePage() {
   return (

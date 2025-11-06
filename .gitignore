@@ -38,3 +38,7 @@ Thumbs.db
 
 # Generated sprite
 public/icons-sprite.svg
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+next-env.d.ts
