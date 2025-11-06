@@ -16,7 +16,6 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 - 📁 **Namespace Support** - Separate sprite files per folder (e.g., `social/` → `icons-social.svg`)
 - 🔍 **Duplicate Detection** - Shows build-time errors when multiple files normalize to the same name
 - ⚡ **Performance Optimized** - Each namespace loads only its own icons
-- ✅ **Fully Tested** - Comprehensive Cypress E2E tests for all components and routes
 
 ## Quick Start
 
@@ -530,33 +529,6 @@ Before deploying:
 1. Run `npm run build:sprite` to generate the sprite
 2. Commit the sprite to git if needed (or regenerate during build)
 3. The `/icons` route will serve the sprite with proper caching headers
-
-## Testing
-
-This project includes comprehensive end-to-end testing with Cypress.
-
-### Run Tests
-
-```bash
-# Interactive mode (opens Cypress UI)
-npm run test:e2e:dev
-
-# Headless mode (for CI/CD)
-npm run build
-npm run test:e2e
-```
-
-### Test Coverage
-
-- ✅ Icon component (basic rendering, sizes, colors)
-- ✅ IconWithLabel component (accessibility)
-- ✅ Namespaced icons (social:, brands:)
-- ✅ Server routes (/icons, /icons/social, /icons/brands)
-- ✅ Icon name normalization
-- ✅ Next.js 16 & React 19 integration
-- ✅ TypeScript & JavaScript compatibility
-
-For detailed testing documentation, see [TESTING.md](./TESTING.md).
 
 ## Browser Support
 

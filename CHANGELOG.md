@@ -33,9 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Formatted all code files with Prettier for consistency
 - Improved TypeScript type coverage
 
+### Removed
+
+- Removed Cypress testing framework and related files to simplify the project
+- Removed cypress directory, cypress.config.ts, and CYPRESS_IMPLEMENTATION.md
+
 ### Fixed
 
-- Fixed tsconfig.json to properly exclude cypress files
+- Fixed tsconfig.json to properly exclude test files
 - Fixed package.json syntax (removed trailing comma)
 
 ## [1.0.0] - Previous Release
@@ -51,7 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hot reload support in development mode
 - File watcher for automatic sprite regeneration
 - Comprehensive documentation and examples
-- Cypress E2E tests for all features
 - Support for Next.js 15+ and Next.js 16 (Turbopack)
 
 ### Features

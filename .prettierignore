@@ -11,5 +11,3 @@ build
 .env.production.local
 public/icons-*.svg
 package-lock.json
-cypress/videos
-cypress/screenshots
