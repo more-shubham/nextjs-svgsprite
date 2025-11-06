@@ -122,13 +122,13 @@ function deduplicateIcons(files) {
     }
   });
 
-  // Show warnings for duplicates
+  // Show errors for duplicates (always visible)
   if (duplicates.length > 0) {
-    console.warn('\n⚠️  Warning: Duplicate icon names detected after normalization:');
+    console.error('\n❌ ERROR: Duplicate icon names detected after normalization:');
     duplicates.forEach(({ name, files }) => {
-      console.warn(`   "${name}" found in: [${files.join(', ')}]`);
+      console.error(`   "${name}" found in: [${files.join(', ')}]`);
     });
-    console.warn('   These duplicates have been removed. Only the first occurrence is kept.\n');
+    console.error('   These duplicates have been removed. Only the first occurrence is kept.\n');
   }
 
   return Array.from(uniqueIcons.values());
@@ -161,28 +161,47 @@ export const iconNames = [${iconNames.map(name => `'${name}'`).join(', ')}] as c
 }
 
 /**
- * Build the SVG sprite
+ * Group icons by namespace
+ */
+function groupByNamespace(files) {
+  const groups = new Map();
+  
+  files.forEach(file => {
+    // Extract namespace from icon name (e.g., "social:facebook" -> "social")
+    const colonIndex = file.name.indexOf(':');
+    let namespace = 'default'; // Root level icons
+    let iconName = file.name;
+    
+    if (colonIndex > 0) {
+      namespace = file.name.substring(0, colonIndex);
+      iconName = file.name.substring(colonIndex + 1);
+    }
+    
+    if (!groups.has(namespace)) {
+      groups.set(namespace, []);
+    }
+    
+    groups.get(namespace).push({
+      ...file,
+      iconName, // Name without namespace prefix
+      fullName: file.name, // Full name with namespace
+    });
+  });
+  
+  return groups;
+}
+
+/**
+ * Build the SVG sprite(s)
  */
 function buildSprite() {
-  console.log('Building SVG sprite...');
-
-  // Initialize svgstore
-  const sprites = svgstore({
-    svgAttrs: {
-      xmlns: 'http://www.w3.org/2000/svg',
-      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-      style: 'display: none;',
-    },
-    copyAttrs: ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin'],
-    cleanDefs: true,
-    cleanSymbols: true,
-  });
+  console.log('Building SVG sprite(s)...');
 
   // Get all SVG files
   const allSvgFiles = getSvgFiles(SVG_DIR);
 
   if (allSvgFiles.length === 0) {
-    console.warn('No SVG files found. Creating empty sprite.');
+    console.warn('No SVG files found. Creating empty default sprite.');
     ensureDirectoryExists(path.dirname(OUTPUT_PATH));
     fs.writeFileSync(OUTPUT_PATH, '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>');
     generateTypeDefinitions([]);
@@ -194,32 +213,57 @@ function buildSprite() {
 
   console.log(`Found ${allSvgFiles.length} SVG file(s), ${svgFiles.length} unique after normalization:`);
 
-  const iconNames = [];
+  // Group icons by namespace
+  const namespaceGroups = groupByNamespace(svgFiles);
+  
+  const allIconNames = [];
+  const outputDir = path.dirname(OUTPUT_PATH);
+  ensureDirectoryExists(outputDir);
 
-  // Add each SVG to the sprite
-  svgFiles.forEach(({ name, originalName, path: filePath }) => {
-    try {
-      const svgContent = fs.readFileSync(filePath, 'utf8');
-      sprites.add(name, svgContent);
-      iconNames.push(name);
-      console.log(`  ✓ ${name} (from ${originalName})`);
-    } catch (error) {
-      console.error(`  ✗ Error adding ${name}:`, error.message);
-    }
+  // Generate a separate sprite file for each namespace
+  namespaceGroups.forEach((icons, namespace) => {
+    const sprites = svgstore({
+      svgAttrs: {
+        xmlns: 'http://www.w3.org/2000/svg',
+        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+        style: 'display: none;',
+      },
+      copyAttrs: ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin'],
+      cleanDefs: true,
+      cleanSymbols: true,
+    });
+
+    console.log(`\n📦 Building sprite for namespace: ${namespace}`);
+
+    // Add each SVG to the namespace sprite
+    icons.forEach(({ iconName, fullName, originalName, path: filePath }) => {
+      try {
+        const svgContent = fs.readFileSync(filePath, 'utf8');
+        sprites.add(iconName, svgContent);
+        allIconNames.push(fullName);
+        console.log(`  ✓ ${fullName} (from ${originalName})`);
+      } catch (error) {
+        console.error(`  ✗ Error adding ${fullName}:`, error.message);
+      }
+    });
+
+    // Write the namespace sprite file
+    const spriteFileName = namespace === 'default' 
+      ? 'icons-sprite.svg' 
+      : `icons-${namespace}.svg`;
+    const spritePath = path.join(outputDir, spriteFileName);
+    const spriteContent = sprites.toString();
+    fs.writeFileSync(spritePath, spriteContent);
+    
+    console.log(`  ✅ Sprite saved: ${spriteFileName} (${icons.length} icons)`);
   });
 
-  // Ensure output directory exists
-  ensureDirectoryExists(path.dirname(OUTPUT_PATH));
-
-  // Write the sprite file
-  const spriteContent = sprites.toString();
-  fs.writeFileSync(OUTPUT_PATH, spriteContent);
-
   // Generate TypeScript type definitions
-  generateTypeDefinitions(iconNames);
+  generateTypeDefinitions(allIconNames);
 
-  console.log(`\nSprite generated successfully at: ${OUTPUT_PATH}`);
+  console.log(`\n✅ All sprites generated successfully!`);
   console.log(`Total icons: ${svgFiles.length}`);
+  console.log(`Namespaces: ${Array.from(namespaceGroups.keys()).join(', ')}`);
 }
 
 // Run the build
