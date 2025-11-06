@@ -31,7 +31,7 @@ if (!fs.existsSync(libDir)) {
 }
 
 // Step 3: Copy sprite files to lib directory
-console.log('\nStep 2: Copying sprite files to lib directory...');
+console.log('\nStep 3: Copying sprite files to lib directory...');
 const publicDir = path.join(process.cwd(), 'public');
 const spriteFiles = fs.readdirSync(publicDir).filter(file => file.endsWith('.svg'));
 
@@ -43,7 +43,7 @@ spriteFiles.forEach(file => {
 });
 
 // Step 4: Copy icon types to lib directory
-console.log('\nStep 3: Copying icon types to lib directory...');
+console.log('\nStep 4: Copying icon types to lib directory...');
 const iconTypesPath = path.join(process.cwd(), 'components', 'icon-types.ts');
 const libIconTypesPath = path.join(libDir, 'icon-types.ts');
 if (fs.existsSync(iconTypesPath)) {

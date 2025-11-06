@@ -26,6 +26,25 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
   style?: CSSProperties;
 }
 
+/**
+ * Parse icon name to determine sprite URL and icon ID
+ * @param name - Icon name (e.g., "home" or "social:facebook")
+ * @returns Object with spriteUrl and iconId
+ */
+function parseSpriteUrl(name: string): { spriteUrl: string; iconId: string } {
+  const colonIndex = name.indexOf(':');
+  let spriteUrl = '/icons'; // Default sprite
+  let iconId: string = name;
+  
+  if (colonIndex > 0) {
+    const namespace = name.substring(0, colonIndex);
+    iconId = name.substring(colonIndex + 1);
+    spriteUrl = `/icons/${namespace}`;
+  }
+  
+  return { spriteUrl, iconId };
+}
+
 export default function Icon({
   name,
   size = 24,
@@ -39,16 +58,7 @@ export default function Icon({
     return null;
   }
 
-  // Determine sprite URL and icon ID based on namespace
-  const colonIndex = name.indexOf(':');
-  let spriteUrl = '/icons'; // Default sprite
-  let iconId: string = name;
-  
-  if (colonIndex > 0) {
-    const namespace = name.substring(0, colonIndex);
-    iconId = name.substring(colonIndex + 1);
-    spriteUrl = `/icons/${namespace}`;
-  }
+  const { spriteUrl, iconId } = parseSpriteUrl(name);
 
   return (
     <svg
@@ -97,16 +107,7 @@ export function IconWithLabel({
     return null;
   }
 
-  // Determine sprite URL and icon ID based on namespace
-  const colonIndex = name.indexOf(':');
-  let spriteUrl = '/icons'; // Default sprite
-  let iconId: string = name;
-  
-  if (colonIndex > 0) {
-    const namespace = name.substring(0, colonIndex);
-    iconId = name.substring(colonIndex + 1);
-    spriteUrl = `/icons/${namespace}`;
-  }
+  const { spriteUrl, iconId } = parseSpriteUrl(name);
 
   return (
     <svg

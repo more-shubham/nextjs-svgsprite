@@ -28,10 +28,9 @@ export async function GET() {
       return new NextResponse(
         '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"></svg>',
         {
-          status: 200,
+          status: 404,
           headers: {
             'Content-Type': 'image/svg+xml',
-            'Cache-Control': 'public, max-age=31536000, immutable',
           },
         }
       );
