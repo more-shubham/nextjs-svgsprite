@@ -98,8 +98,10 @@ export function IconGallery() {
 }
 
 // ✅ Example 6: Type guard for runtime validation
+// For better performance with large icon sets, use a Set
+const iconNamesSet = new Set(iconNames);
 export function isValidIconName(name: string): name is IconName {
-  return iconNames.includes(name as IconName);
+  return iconNamesSet.has(name as IconName);
 }
 
 export function DynamicIconRenderer({ iconNameFromApi }: { iconNameFromApi: string }) {
