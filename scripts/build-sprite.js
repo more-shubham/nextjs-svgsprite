@@ -265,9 +265,7 @@ function deduplicateIcons(files) {
 function generateTypeDefinitions(iconNames) {
   // Generate multi-line format for better readability
   const typeLines =
-    iconNames.length > 0
-      ? iconNames.map((name, index) => (index === 0 ? `  | '${name}'` : `  | '${name}'`)).join('\n')
-      : '  never';
+    iconNames.length > 0 ? iconNames.map((name) => `  | '${name}'`).join('\n') : '  never';
 
   const iconNamesLines =
     iconNames.length > 0
