@@ -105,12 +105,12 @@ The package.json exports configuration:
     "./icon-types": "./lib/icon-types.ts",
     "./icons/route": "./lib/icons/route.ts",
     "./icons/[namespace]/route": "./lib/icons/[namespace]/route.ts",
-    "./lib/icons-sprite.svg": "./lib/icons-sprite.svg",
-    "./lib/icons-social.svg": "./lib/icons-social.svg",
-    "./lib/icons-brands.svg": "./lib/icons-brands.svg"
+    "./lib/*.svg": "./lib/*.svg"
   }
 }
 ```
+
+The wildcard pattern `"./lib/*.svg": "./lib/*.svg"` dynamically exports all SVG sprite files, so any new namespace sprites are automatically available without modifying package.json.
 
 ## Build Process
 

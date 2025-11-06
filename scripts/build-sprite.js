@@ -263,6 +263,17 @@ function deduplicateIcons(files) {
  * // Creates: export type IconName = 'home' | 'user' | 'social:facebook';
  */
 function generateTypeDefinitions(iconNames) {
+  // Generate multi-line format for better readability
+  const typeLines =
+    iconNames.length > 0 ? iconNames.map((name) => `  | '${name}'`).join('\n') : '  never';
+
+  const iconNamesLines =
+    iconNames.length > 0
+      ? iconNames
+          .map((name, index) => `  '${name}'${index < iconNames.length - 1 ? ',' : ''}`)
+          .join('\n')
+      : '';
+
   const typeDefinition = `/**
  * Auto-generated TypeScript types for SVG sprite icons
  * Generated from svg-icons directory
@@ -272,9 +283,12 @@ function generateTypeDefinitions(iconNames) {
  * To regenerate this file, run: npm run build:sprite
  */
 
-export type IconName = ${iconNames.length > 0 ? iconNames.map((name) => `'${name}'`).join(' | ') : 'never'};
+export type IconName =
+${typeLines};
 
-export const iconNames = [${iconNames.map((name) => `'${name}'`).join(', ')}] as const;
+export const iconNames = [
+${iconNamesLines}
+] as const;
 `;
 
   try {
