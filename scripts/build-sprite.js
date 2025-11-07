@@ -152,8 +152,7 @@ function cleanSvgMetadata(svgContent) {
  * - And more optimizations to reduce file size
  *
  * @param {string} svgContent - The SVG content to optimize
- * @returns {string} The optimized SVG content
- * @throws {Error} If optimization fails
+ * @returns {string} The optimized SVG content. If optimization fails, returns the original content and logs a warning.
  *
  * @example
  * optimizeSvg('<svg><g id="unused"><path d="..."/></g></svg>')
