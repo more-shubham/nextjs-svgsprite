@@ -135,18 +135,9 @@ function normalizeIconName(name) {
  * // Returns: '<svg><path d="..."/></svg>'
  */
 function cleanSvgMetadata(svgContent) {
-  let cleaned = svgContent;
-  
-  // Remove title tags (case-insensitive, with any attributes, including nested content)
-  cleaned = cleaned.replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '');
-  
-  // Remove desc tags (case-insensitive, with any attributes, including nested content)
-  cleaned = cleaned.replace(/<desc[^>]*>[\s\S]*?<\/desc>/gi, '');
-  
-  // Remove metadata tags (case-insensitive, with any attributes, including nested content)
-  cleaned = cleaned.replace(/<metadata[^>]*>[\s\S]*?<\/metadata>/gi, '');
-  
-  return cleaned;
+  // Remove title, desc, and metadata tags in a single pass
+  // Using backreference (\1) to match the opening and closing tags
+  return svgContent.replace(/<(title|desc|metadata)[^>]*>[\s\S]*?<\/\1>/gi, '');
 }
 
 /**
@@ -181,21 +172,6 @@ function optimizeSvg(svgContent) {
             },
           },
         },
-        // Clean up IDs - remove unused ones, minify used ones
-        {
-          name: 'cleanupIds',
-          params: {
-            remove: true,
-            minify: true,
-            preserve: [],
-            preservePrefixes: [],
-            force: false,
-          },
-        },
-        // Remove empty containers
-        'removeEmptyContainers',
-        // Collapse groups when possible
-        'collapseGroups',
       ],
     });
     
