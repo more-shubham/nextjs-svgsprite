@@ -105,17 +105,20 @@ export default function IconDynamic({
     };
   }, [namespace]);
 
-  // Show nothing while loading
+  // Show placeholder while loading to avoid layout shifts
   if (!isLoaded && !hasError) {
     return (
       <svg
         width={size}
         height={size}
+        fill={color}
         className={className}
         style={style}
         aria-hidden="true"
         {...props}
-      />
+      >
+        {/* Empty placeholder maintains layout */}
+      </svg>
     );
   }
 
@@ -206,18 +209,21 @@ export function IconDynamicWithLabel({
     };
   }, [namespace]);
 
-  // Show nothing while loading
+  // Show placeholder while loading to avoid layout shifts
   if (!isLoaded && !hasError) {
     return (
       <svg
         width={size}
         height={size}
+        fill={color}
         className={className}
         style={style}
         role="img"
         aria-label={label || name}
         {...props}
-      />
+      >
+        {/* Empty placeholder maintains layout */}
+      </svg>
     );
   }
 

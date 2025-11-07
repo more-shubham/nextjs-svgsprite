@@ -20,7 +20,7 @@ const CACHE_KEY_PREFIX = 'nextjs-svgsprite';
 
 /**
  * In-memory cache for loaded sprites
- * Structure: { namespace: { version: string, content: string, promise?: Promise } }
+ * Structure: { namespace: { version: string, content: string, promise?: Promise<string> } }
  */
 const spriteCache: Map<
   string,
@@ -30,6 +30,11 @@ const spriteCache: Map<
     promise?: Promise<string>;
   }
 > = new Map();
+
+/**
+ * Track sprite keys in session storage for efficient cleanup
+ */
+const sessionStorageKeys: Set<string> = new Set();
 
 /**
  * Get cache key for session storage
@@ -60,9 +65,12 @@ function loadFromSessionStorage(namespace: string): string | null {
     if (parsed.version !== SPRITE_VERSION) {
       // Version mismatch, clear cache
       window.sessionStorage.removeItem(cacheKey);
+      sessionStorageKeys.delete(cacheKey);
       return null;
     }
 
+    // Track the key
+    sessionStorageKeys.add(cacheKey);
     return parsed.content;
   } catch (error) {
     console.warn(`Failed to load sprite from session storage: ${namespace}`, error);
@@ -87,6 +95,7 @@ function saveToSessionStorage(namespace: string, content: string): void {
     });
 
     window.sessionStorage.setItem(cacheKey, data);
+    sessionStorageKeys.add(cacheKey); // Track the key for efficient cleanup
   } catch (error) {
     console.warn(`Failed to save sprite to session storage: ${namespace}`, error);
   }
@@ -100,7 +109,7 @@ async function fetchSpriteFromServer(namespace: string): Promise<string> {
 
   try {
     const response = await fetch(url, {
-      cache: 'force-cache', // Use browser cache when possible
+      cache: 'default', // Use default browser caching strategy
     });
 
     if (!response.ok) {
@@ -235,13 +244,11 @@ export function clearSpriteCache(): void {
   spriteCache.clear();
 
   if (typeof window !== 'undefined' && window.sessionStorage) {
-    // Clear all sprite-related keys from session storage
-    const keys = Object.keys(window.sessionStorage);
-    keys.forEach((key) => {
-      if (key.startsWith(CACHE_KEY_PREFIX)) {
-        window.sessionStorage.removeItem(key);
-      }
+    // Clear only tracked sprite keys for efficiency
+    sessionStorageKeys.forEach((key) => {
+      window.sessionStorage.removeItem(key);
     });
+    sessionStorageKeys.clear();
   }
 }
 

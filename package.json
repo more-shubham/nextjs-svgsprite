@@ -18,8 +18,6 @@
     "lib/**/*",
     "scripts/build-sprite.js",
     "components/Icon.tsx",
-    "components/IconDynamic.tsx",
-    "components/sprite-loader.ts",
     "components/icon-types.ts",
     "app/icons/**/*"
   ],
