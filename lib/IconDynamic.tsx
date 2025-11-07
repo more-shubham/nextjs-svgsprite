@@ -49,6 +49,39 @@ function parseIconName(name: string): { namespace: string; iconId: string } {
 }
 
 /**
+ * Custom hook to load sprite for a given namespace
+ * Handles loading state and error state
+ */
+function useLoadSprite(namespace: string) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Load the sprite for this namespace
+    loadSprite(namespace)
+      .then(() => {
+        if (mounted) {
+          setIsLoaded(true);
+        }
+      })
+      .catch((error) => {
+        console.error(`Failed to load sprite for namespace: ${namespace}`, error);
+        if (mounted) {
+          setHasError(true);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [namespace]);
+
+  return { isLoaded, hasError };
+}
+
+/**
  * Dynamic Icon Component
  *
  * This component dynamically loads the required sprite on first use and caches it
@@ -73,37 +106,13 @@ export default function IconDynamic({
   style = {},
   ...props
 }: IconDynamicProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
   if (!name) {
     console.warn('IconDynamic component requires a "name" prop');
     return null;
   }
 
   const { namespace, iconId } = parseIconName(name);
-
-  useEffect(() => {
-    let mounted = true;
-
-    // Load the sprite for this namespace
-    loadSprite(namespace)
-      .then(() => {
-        if (mounted) {
-          setIsLoaded(true);
-        }
-      })
-      .catch((error) => {
-        console.error(`Failed to load sprite for namespace: ${namespace}`, error);
-        if (mounted) {
-          setHasError(true);
-        }
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [namespace]);
+  const { isLoaded, hasError } = useLoadSprite(namespace);
 
   // Show placeholder while loading to avoid layout shifts
   if (!isLoaded && !hasError) {
@@ -178,36 +187,13 @@ export function IconDynamicWithLabel({
   style = {},
   ...props
 }: IconDynamicWithLabelProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
   if (!name) {
     console.warn('IconDynamicWithLabel component requires a "name" prop');
     return null;
   }
 
   const { namespace, iconId } = parseIconName(name);
-
-  useEffect(() => {
-    let mounted = true;
-
-    loadSprite(namespace)
-      .then(() => {
-        if (mounted) {
-          setIsLoaded(true);
-        }
-      })
-      .catch((error) => {
-        console.error(`Failed to load sprite for namespace: ${namespace}`, error);
-        if (mounted) {
-          setHasError(true);
-        }
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [namespace]);
+  const { isLoaded, hasError } = useLoadSprite(namespace);
 
   // Show placeholder while loading to avoid layout shifts
   if (!isLoaded && !hasError) {

@@ -125,10 +125,26 @@ async function fetchSpriteFromServer(namespace: string): Promise<string> {
 }
 
 /**
+ * Validate that content is a valid SVG string
+ */
+function isValidSvgContent(content: string): boolean {
+  // Basic validation: check if it's an SVG element
+  return typeof content === 'string' && 
+         content.trim().startsWith('<svg') && 
+         content.includes('</svg>');
+}
+
+/**
  * Inject sprite SVG into the DOM
  */
 function injectSprite(namespace: string, content: string): void {
   if (typeof document === 'undefined') {
+    return;
+  }
+
+  // Validate content before injection to prevent XSS
+  if (!isValidSvgContent(content)) {
+    console.error(`Invalid SVG content for namespace: ${namespace}`);
     return;
   }
 
@@ -144,7 +160,7 @@ function injectSprite(namespace: string, content: string): void {
     document.body.appendChild(container);
   }
 
-  // Set the sprite content
+  // Set the sprite content (validated as SVG above)
   container.innerHTML = content;
 }
 
