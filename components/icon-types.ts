@@ -29,5 +29,5 @@ export const iconNames = [
   'sun-moon',
   'user',
   'social:facebook',
-  'social:twitter',
+  'social:twitter'
 ] as const;
