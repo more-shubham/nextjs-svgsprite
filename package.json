@@ -6,6 +6,8 @@
   "exports": {
     ".": "./nextjs-svgsprite.js",
     "./Icon": "./lib/Icon.tsx",
+    "./IconDynamic": "./lib/IconDynamic.tsx",
+    "./sprite-loader": "./lib/sprite-loader.ts",
     "./icon-types": "./lib/icon-types.ts",
     "./icons/route": "./lib/icons/route.ts",
     "./icons/[namespace]/route": "./lib/icons/[namespace]/route.ts",
@@ -16,6 +18,8 @@
     "lib/**/*",
     "scripts/build-sprite.js",
     "components/Icon.tsx",
+    "components/IconDynamic.tsx",
+    "components/sprite-loader.ts",
     "components/icon-types.ts",
     "app/icons/**/*"
   ],
