@@ -8,18 +8,22 @@
  *
  * 1. Scans the svg-icons directory for all .svg files (including subdirectories)
  * 2. Normalizes icon names to kebab-case for consistency
- * 3. Groups icons by namespace based on folder structure
- * 4. Generates separate sprite files for each namespace
- * 5. Creates TypeScript type definitions for type-safe icon usage
- * 6. Detects and reports duplicate icon names
+ * 3. Checks for duplicate icons within each namespace and fails if duplicates found
+ * 4. Renames SVG files to match kebab-case standard (if no duplicates)
+ * 5. Cleans SVG content by removing metadata (title, desc, metadata tags)
+ * 6. Optimizes SVGs to reduce file size (remove unused IDs, minify, etc.)
+ * 7. Groups icons by namespace based on folder structure
+ * 8. Generates separate sprite files for each namespace
+ * 9. Creates TypeScript type definitions for type-safe icon usage
  *
  * @author Next.js SVG Sprite Plugin Team
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 const fs = require('fs');
 const path = require('path');
 const svgstore = require('svgstore');
+const { optimize } = require('svgo');
 
 // ============================================================================
 // Configuration Constants
@@ -116,6 +120,69 @@ function normalizeIconName(name) {
 }
 
 /**
+ * Clean SVG content by removing metadata tags
+ *
+ * Removes the following tags from SVG content:
+ * - <title> tags and their content
+ * - <desc> tags and their content
+ * - <metadata> tags and their content
+ *
+ * @param {string} svgContent - The SVG content to clean
+ * @returns {string} The cleaned SVG content
+ *
+ * @example
+ * cleanSvgMetadata('<svg><title>Icon</title><path d="..."/></svg>')
+ * // Returns: '<svg><path d="..."/></svg>'
+ */
+function cleanSvgMetadata(svgContent) {
+  // Remove title, desc, and metadata tags in a single pass
+  // Using backreference (\1) to match the opening and closing tags
+  return svgContent.replace(/<(title|desc|metadata)[^>]*>[\s\S]*?<\/\1>/gi, '');
+}
+
+/**
+ * Optimize SVG content using SVGO
+ *
+ * This function optimizes SVG files by:
+ * - Removing unused IDs
+ * - Cleaning up numeric values
+ * - Removing empty elements
+ * - Collapsing groups
+ * - Converting path data to shorter formats
+ * - And more optimizations to reduce file size
+ *
+ * @param {string} svgContent - The SVG content to optimize
+ * @returns {string} The optimized SVG content. If optimization fails, returns the original content and logs a warning.
+ *
+ * @example
+ * optimizeSvg('<svg><g id="unused"><path d="..."/></g></svg>')
+ * // Returns optimized SVG with unused ID removed
+ */
+function optimizeSvg(svgContent) {
+  try {
+    const result = optimize(svgContent, {
+      plugins: [
+        {
+          name: 'preset-default',
+          params: {
+            overrides: {
+              // Keep viewBox as it's important for scaling
+              removeViewBox: false,
+            },
+          },
+        },
+      ],
+    });
+    
+    return result.data;
+  } catch (error) {
+    console.warn(`⚠️  Warning: SVGO optimization failed: ${error.message}`);
+    // Return original content if optimization fails
+    return svgContent;
+  }
+}
+
+/**
  * Ensure a directory exists, create if it doesn't
  *
  * @param {string} dirPath - The directory path to ensure exists
@@ -206,48 +273,138 @@ function getSvgFiles(dir, namespace = '', originalNamespace = '') {
 }
 
 /**
- * Remove duplicate icons and show warnings
+ * Check for duplicate icons within each namespace and fail build if found
  *
- * This function identifies icons with duplicate normalized names and removes them,
- * keeping only the first occurrence. It provides detailed error messages to help
- * developers identify and resolve naming conflicts.
+ * This function identifies icons with duplicate normalized names within the same namespace.
+ * Duplicates across different namespaces are allowed (e.g., 'plus' and 'sidebar:plus').
+ * If duplicates are found within a namespace, the build fails with an error.
  *
  * @param {Array<{originalName: string, name: string, path: string}>} files - Array of SVG file objects
- * @returns {Array<{originalName: string, name: string, path: string}>} Deduplicated array of SVG file objects
+ * @throws {Error} If duplicates are found within the same namespace
  */
-function deduplicateIcons(files) {
-  const uniqueIcons = new Map();
-  const duplicates = [];
-
+function checkForDuplicates(files) {
+  // Group files by namespace
+  const namespaceGroups = new Map();
+  
   files.forEach((file) => {
-    if (uniqueIcons.has(file.name)) {
-      // Found a duplicate
-      const existing = uniqueIcons.get(file.name);
-      const existingDuplicate = duplicates.find((d) => d.name === file.name);
-
-      if (!existingDuplicate) {
-        duplicates.push({
-          name: file.name,
-          files: [existing.originalName, file.originalName],
+    // Extract namespace from icon name (e.g., "social:facebook" -> "social")
+    const colonIndex = file.name.indexOf(':');
+    const namespace = colonIndex > 0 ? file.name.substring(0, colonIndex) : DEFAULT_NAMESPACE;
+    const iconName = colonIndex > 0 ? file.name.substring(colonIndex + 1) : file.name;
+    
+    if (!namespaceGroups.has(namespace)) {
+      namespaceGroups.set(namespace, new Map());
+    }
+    
+    const namespaceIcons = namespaceGroups.get(namespace);
+    
+    if (!namespaceIcons.has(iconName)) {
+      namespaceIcons.set(iconName, []);
+    }
+    
+    namespaceIcons.get(iconName).push({
+      originalName: file.originalName,
+      fullName: file.name,
+      path: file.path,
+    });
+  });
+  
+  // Check for duplicates within each namespace
+  const duplicatesFound = [];
+  
+  namespaceGroups.forEach((icons, namespace) => {
+    icons.forEach((files, iconName) => {
+      if (files.length > 1) {
+        duplicatesFound.push({
+          namespace: namespace === DEFAULT_NAMESPACE ? 'default (root level)' : namespace,
+          iconName,
+          files: files.map(f => f.originalName),
         });
+      }
+    });
+  });
+  
+  // If duplicates found, show error and fail the build
+  if (duplicatesFound.length > 0) {
+    console.error('\n❌ ERROR: Duplicate icon names detected within the same namespace:');
+    console.error('   Duplicate icons within the same namespace are not allowed!\n');
+    
+    duplicatesFound.forEach(({ namespace, iconName, files }) => {
+      console.error(`   Namespace: ${namespace}`);
+      console.error(`   Icon name: "${iconName}"`);
+      console.error(`   Found in files: [${files.join(', ')}]`);
+      console.error('');
+    });
+    
+    console.error('   Please rename or remove duplicate files within each namespace.');
+    console.error('   Note: Same icon names in DIFFERENT namespaces are allowed.');
+    console.error('   Example: "plus.svg" and "sidebar/plus.svg" is OK.\n');
+    
+    throw new Error('Build failed due to duplicate icon names within the same namespace');
+  }
+}
+
+/**
+ * Rename SVG files to kebab-case standard
+ *
+ * This function renames SVG source files to match the kebab-case naming convention
+ * used in the Icon component. It only renames files that differ from their normalized names.
+ *
+ * @param {Array<{originalName: string, name: string, path: string}>} files - Array of SVG file objects
+ * @returns {Array<{originalName: string, name: string, path: string}>} Updated array with new paths
+ */
+function renameFilesToKebabCase(files) {
+  const renamedFiles = [];
+  let renamedCount = 0;
+  
+  files.forEach((file) => {
+    const dir = path.dirname(file.path);
+    const originalFileName = path.basename(file.path);
+    const originalBaseName = path.basename(originalFileName, '.svg');
+    
+    // Extract the expected filename from the normalized name
+    // For namespaced icons, get just the icon part (after last colon)
+    const lastColonIndex = file.name.lastIndexOf(':');
+    const expectedBaseName = lastColonIndex >= 0 
+      ? file.name.substring(lastColonIndex + 1) 
+      : file.name;
+    const expectedFileName = `${expectedBaseName}.svg`;
+    
+    // Check if renaming is needed
+    if (originalBaseName !== expectedBaseName) {
+      const newPath = path.join(dir, expectedFileName);
+      
+      // Check if target file already exists
+      if (fs.existsSync(newPath)) {
+        console.warn(`⚠️  Warning: Cannot rename "${originalFileName}" to "${expectedFileName}" - target file already exists`);
+        renamedFiles.push(file);
       } else {
-        existingDuplicate.files.push(file.originalName);
+        try {
+          fs.renameSync(file.path, newPath);
+          console.log(`  ✓ Renamed: ${file.originalName}.svg → ${expectedBaseName}.svg`);
+          renamedCount++;
+          
+          // Update the file object with new path
+          renamedFiles.push({
+            ...file,
+            path: newPath,
+          });
+        } catch (error) {
+          console.error(`  ✗ Error renaming ${originalFileName}: ${error.message}`);
+          renamedFiles.push(file);
+        }
       }
     } else {
-      uniqueIcons.set(file.name, file);
+      // No rename needed
+      renamedFiles.push(file);
     }
   });
-
-  // Show errors for duplicates (always visible for debugging)
-  if (duplicates.length > 0) {
-    console.error('\n❌ ERROR: Duplicate icon names detected after normalization:');
-    duplicates.forEach(({ name, files }) => {
-      console.error(`   "${name}" found in: [${files.join(', ')}]`);
-    });
-    console.error('   These duplicates have been removed. Only the first occurrence is kept.\n');
+  
+  if (renamedCount > 0) {
+    console.log(`\n✅ Renamed ${renamedCount} file(s) to kebab-case standard\n`);
   }
-
-  return Array.from(uniqueIcons.values());
+  
+  return renamedFiles;
 }
 
 /**
@@ -386,16 +543,19 @@ function buildSprite() {
       return;
     }
 
-    // Step 3: Remove duplicates and validate
-    const svgFiles = deduplicateIcons(allSvgFiles);
-    console.log(
-      `📊 Found ${allSvgFiles.length} SVG file(s), ${svgFiles.length} unique after normalization:\n`,
-    );
+    console.log(`📊 Found ${allSvgFiles.length} SVG file(s):\n`);
 
-    // Step 4: Group icons by namespace
-    const namespaceGroups = groupByNamespace(svgFiles);
+    // Step 3: Check for duplicates within each namespace and fail if found
+    checkForDuplicates(allSvgFiles);
 
-    // Step 5: Generate sprite files for each namespace
+    // Step 4: Rename files to kebab-case standard
+    console.log('📝 Checking file names...\n');
+    const renamedFiles = renameFilesToKebabCase(allSvgFiles);
+
+    // Step 5: Group icons by namespace
+    const namespaceGroups = groupByNamespace(renamedFiles);
+
+    // Step 6: Generate sprite files for each namespace
     const allIconNames = [];
     ensureDirectoryExists(OUTPUT_DIR);
 
@@ -417,10 +577,24 @@ function buildSprite() {
       // Add each icon to the sprite
       icons.forEach(({ iconName, fullName, originalName, path: filePath }) => {
         try {
-          const svgContent = fs.readFileSync(filePath, FILE_ENCODING);
+          // Read SVG content
+          let svgContent = fs.readFileSync(filePath, FILE_ENCODING);
+          
+          // Get original size for comparison
+          const originalSize = svgContent.length;
+          
+          // Clean metadata (title, desc, metadata tags)
+          svgContent = cleanSvgMetadata(svgContent);
+          
+          // Optimize SVG (remove unused IDs, minify, etc.)
+          svgContent = optimizeSvg(svgContent);
+          
+          const optimizedSize = svgContent.length;
+          const reduction = originalSize > 0 ? ((originalSize - optimizedSize) / originalSize * 100).toFixed(1) : 0;
+          
           sprites.add(iconName, svgContent);
           allIconNames.push(fullName);
-          console.log(`  ✓ ${fullName} (from ${originalName})`);
+          console.log(`  ✓ ${fullName} (${originalSize}B → ${optimizedSize}B, -${reduction}%)`);
         } catch (error) {
           console.error(`  ✗ Error adding ${fullName}: ${error.message}`);
         }
@@ -441,12 +615,12 @@ function buildSprite() {
       }
     });
 
-    // Step 6: Generate TypeScript type definitions
+    // Step 7: Generate TypeScript type definitions
     generateTypeDefinitions(allIconNames);
 
-    // Step 7: Display success summary
+    // Step 8: Display success summary
     console.log('✅ All sprites generated successfully!');
-    console.log(`📈 Total icons: ${svgFiles.length}`);
+    console.log(`📈 Total icons: ${renamedFiles.length}`);
     console.log(`🏷️  Namespaces: ${Array.from(namespaceGroups.keys()).join(', ')}`);
   } catch (error) {
     console.error('\n❌ Build failed:', error.message);
