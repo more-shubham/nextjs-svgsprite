@@ -1,0 +1,1 @@
+../lib/IconDynamic.tsx

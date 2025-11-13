@@ -16,6 +16,7 @@ A complete Next.js 15+ plugin scaffold that automatically generates SVG sprites 
 - 📁 **Namespace Support** - Separate sprite files per folder (e.g., `social/` → `icons-social.svg`)
 - 🔍 **Duplicate Detection** - Shows build-time errors when multiple files normalize to the same name
 - ⚡ **Performance Optimized** - Each namespace loads only its own icons
+- 🚀 **NEW: Dynamic Loading** - Client-side lazy loading with intelligent caching (no route setup needed!)
 
 ## Quick Start
 
@@ -190,6 +191,82 @@ import { IconWithLabel } from '@/components/Icon';
   size={24}
 />;
 ```
+
+## Dynamic Icon Loading (NEW!)
+
+The new `IconDynamic` component provides client-side lazy loading with intelligent caching, eliminating the need for manual route setup. Perfect for client-heavy applications and npm packages!
+
+### Key Benefits
+
+- ✅ **No Route Setup Required** - Just import and use, no need to copy route files
+- ✅ **Lazy Loading** - Sprites loaded on-demand per namespace
+- ✅ **Smart Caching** - In-memory + session storage with version management
+- ✅ **Easy Integration** - Works out of the box in any Next.js project
+- ✅ **Version Management** - Automatic cache invalidation on version changes
+
+### Usage
+
+```tsx
+'use client';
+
+import IconDynamic from '@/components/IconDynamic';
+
+export default function MyComponent() {
+  return (
+    <div>
+      {/* Default namespace icon */}
+      <IconDynamic name="home" size={24} />
+      
+      {/* Namespaced icon - loads 'social' sprite on first use */}
+      <IconDynamic name="social:facebook" size={32} />
+      
+      {/* Another namespaced icon - reuses cached 'social' sprite */}
+      <IconDynamic name="social:twitter" size={32} />
+    </div>
+  );
+}
+```
+
+### Advanced Features
+
+**Preload Namespaces:**
+```tsx
+import { preloadSprites } from '@/components/IconDynamic';
+
+useEffect(() => {
+  preloadSprites(['social', 'brands']); // Preload common namespaces
+}, []);
+```
+
+**Clear Cache:**
+```tsx
+import { clearSpriteCache } from '@/components/IconDynamic';
+
+clearSpriteCache(); // Clear all cached sprites
+```
+
+**Check Version:**
+```tsx
+import { getSpriteVersion } from '@/components/IconDynamic';
+
+console.log('Sprite version:', getSpriteVersion());
+```
+
+### When to Use Dynamic vs Static
+
+**Use `Icon` (Static)** when:
+- You're using server components
+- You need maximum performance with static routes
+- You don't mind setting up route handlers
+
+**Use `IconDynamic` (Dynamic)** when:
+- You want zero configuration
+- You're building a client-heavy application
+- You're publishing an npm package
+- You need lazy loading and intelligent caching
+- You want built-in version management
+
+> 📘 **Full Documentation**: See [DYNAMIC_LOADING.md](./DYNAMIC_LOADING.md) for complete documentation on dynamic loading, caching strategies, and advanced usage.
 
 ## Build Scripts
 
@@ -391,6 +468,30 @@ The `Icon` component automatically:
 - Better code splitting and faster page loads
 
 ## Integration with Existing Projects
+
+### Option 1: Dynamic Loading (Easiest - Recommended)
+
+**No route setup required!** Just copy the components and start using them:
+
+1. **Copy files:**
+   - `components/IconDynamic.tsx` - Dynamic icon component
+   - `components/sprite-loader.ts` - Sprite loader utility
+
+2. **Use in your project:**
+   ```tsx
+   'use client';
+   import IconDynamic from '@/components/IconDynamic';
+   
+   <IconDynamic name="home" size={24} />
+   ```
+
+3. **That's it!** Icons will be loaded dynamically with caching.
+
+> 💡 **Perfect for**: Client-side apps, npm packages, projects where you want zero configuration
+
+### Option 2: Static Routes (Traditional)
+
+If you prefer static routes with SSG:
 
 ### Step 1: Copy Files
 
